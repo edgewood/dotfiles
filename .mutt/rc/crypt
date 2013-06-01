@@ -1,0 +1,44 @@
+# Set encrypt/sign+encrypt commands.  Copied from gpg.rc, removing 
+# --always-trust
+# removed --passphrase-fd 0 to enable gpg-agent
+set pgp_encrypt_only_command="/usr/lib/mutt/pgpewrap gpg -v --batch --output - --encrypt --textmode --armor --encrypt-to 98553ECE -- -r %r -- %f" 
+set pgp_encrypt_sign_command="/usr/lib/mutt/pgpewrap gpg -v --batch --output - --encrypt --sign %?a?-u %a? --armor -- -r %r -- %f"
+#set pgp_sign_command="DISPLAY= gpg --no-verbose --batch --quiet --output - --armor --detach-sign --textmode %?a?-u %a? %f"
+
+# reply to signed and/or encrypted messages the same way they came in
+set pgp_replyencrypt=yes
+set pgp_replysign=yes
+set pgp_replysignencrypted=yes
+set pgp_timeout=1800
+
+# Add my fingerprint and keyserver to my headers
+my_hdr X-gpg-fingerprint: BB1F CFF8 C74F 6D41 A782  C878 DE7A D434 9855 3ECE
+my_hdr X-gpg-key: http://pgp.dtype.org
+
+# use gpg-agent
+set pgp_use_gpg_agent=yes
+
+# sign, but don't encrypt, and use a new-style signature, by default. 
+# Since we're going to modify the default for certain recipients below, we
+# can't just set the variable, but have to set them in a "match all" send-hook
+
+send-hook . set pgp_create_traditional=no
+send-hook . set crypt_autosign=yes
+send-hook . set crypt_autoencrypt=no                                           
+
+# Modifications from the default
+
+crypt-hook sherman@sas.com sherman@unx.sas.com
+crypt-hook sherman@pcsherman.com sherman@unx.sas.com
+
+# Autoencrypt if every recipient has a GPG key
+send-hook '!~G ^%C gpg' 'set crypt_autoencrypt=yes'                                          
+source ~/bin/muttGpgListKeys|
+
+send-hook "~C jb@jbacher.com" set pgp_create_traditional=ask-yes
+send-hook "~C valentineclown@earthlink.net" set crypt_autosign=no
+send-hook "~C tblackman1@earthlink.net" set crypt_autosign=no
+send-hook "~C @accis.edu|~C @americansentinel.edu" set crypt_autosign=no
+send-hook "~C .*@yahoogroups.com" set crypt_autosign=no
+send-hook "~C .*@googlegroups.com" set crypt_autosign=no
+

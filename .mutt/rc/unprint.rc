@@ -1,0 +1,7 @@
+unset pipe_decode
+
+source ~/.mutt/rc/headers
+
+# workaround for enscript wrap bug, fixed in enscript 1.6.5.2-1
+set wrap=$my_wrap
+unset my_wrap

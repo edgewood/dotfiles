@@ -1,0 +1,29 @@
+# start out fresh
+unhook send-hook
+
+#send-hook .			'my_hdr Message-ID:<`date +"%s"`.`(id; echo $$; date) | md5sum | cut -c 1-5`@strabo.loghyr.theblackmans>'
+
+# I stopped using TMDA for outgoing mail a month or so ago, so stop adding the header - 2011-05-18
+#
+## outgoing TMDA setup
+#send-hook .				my_hdr X-TMDA: bare=append
+#send-hook "~t .*yahoogroups.com"	my_hdr X-TMDA: bare
+#send-hook "~t .*googlegroups.com"	my_hdr X-TMDA: bare
+
+# default identity and alternates
+send-hook .				my_hdr "From: Identity_default"
+send-hook "~t vim_use@googlegroups.com" my_hdr "From: Identity_vim"
+
+# change signatures depending on identity
+send-hook .				set signature="~/.mutt/sigs/default.sig"
+
+# some people can't easily read mime_forward messages
+send-hook .				set mime_forward=yes
+#send-hook "~t jen"			set mime_forward=no  # For Jen's Blackberry
+
+# help other Jaycees to not break the rules about followups to the list by
+# unsetting followup_to for those lists
+send-hook . "set followup_to=yes"
+send-hook "~t broadcast" "set followup_to=no"
+send-hook "~t projects" "set followup_to=no"
+

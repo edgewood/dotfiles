@@ -1,0 +1,8 @@
+set pipe_decode
+
+ignore *
+unignore Date: From: Cc: To: Subject:
+
+# workaround for enscript wrap bug, fixed in enscript 1.6.5.2-1
+set my_wrap=$wrap
+set wrap=72

@@ -1,0 +1,7 @@
+# override default, which puts iso-8859-1 before UTF-8
+set send_charset="us-ascii:utf-8"
+
+message-hook .			"unhook charset-hook"
+
+# IJ sends Windows quotes in messages marked as Latin1 
+message-hook "~f @ij.org"	"charset-hook ^iso-8859-1$ windows-1252"

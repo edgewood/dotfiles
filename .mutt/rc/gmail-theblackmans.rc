@@ -1,0 +1,20 @@
+alias Identity_default Ed Blackman <ed@theblackmans.net>
+#set realname = "Ed Blackman"
+set from = "Identity_default"
+
+set imap_user = "ed@theblackmans.net"
+
+# password .asc file contains GPG encrypted password on a line by itself
+# This will decrypt the file (using agent to avoid prompt if possible) to
+# retrieve the password.
+source "gpg --use-agent --decrypt ~/.mutt/passwords/gmail-theblackmans.asc |"
+
+set folder = "imaps://imap.gmail.com:993"
+set smtp_url = "smtp://ed@theblackmans.net@smtp.gmail.com:587/"
+set spoolfile = "+INBOX"
+set postponed ="+[Gmail]/Drafts"
+set trash = "imaps://imap.gmail.com/[Gmail]/Trash"
+
+#set header_cache =~/.mutt/cache/headers
+#set message_cachedir =~/.mutt/cache/bodies
+#set certificate_file =~/.mutt/certificates

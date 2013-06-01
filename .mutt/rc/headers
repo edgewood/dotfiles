@@ -1,0 +1,26 @@
+##unignore Content-Type
+#unignore Date
+#unignore Delivered-To
+#ignore Delivery-date
+#ignore X-Virus-Scanned X-Antivirus-Scanner
+#ignore X-Sanitizer
+#ignore X-gpg-fingerprint
+#ignore Disposition-Notification-To
+#ignore X-UIDL
+#ignore X-FUBAR-Lines
+#ignore X-UID
+#ignore X-Received
+#ignore X-Yahoo X-eGroups-Msg-Info X-YMail-OSG
+#ignore X-Spam- X-AntiAbuse
+#ignore X-Source
+#ignore X-Habeas-SWE- Accreditor
+#ignore Content-Type
+#ignore List- Mailing-List
+#ignore X-Authority-Analysis X-Cloudmark-Score X-Originating-IP
+#ignore X-AMAZON-
+
+ignore *
+unignore Delivered-To: Envelope-to: Date: From: To: Cc: Subject:
+unignore X-TMDA-Action: X-Bogosity: X-Archive: X-FailedRBL:
+unignore X-Pending
+unignore X-Label

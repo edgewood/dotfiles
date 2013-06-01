@@ -1,0 +1,4 @@
+macro index  ":source ~/.mutt/rc/print-pdf.rc\n"
+macro index,pager p '<enter-command>source ~/.mutt/rc/print.rc<enter><pipe-message>muttPrint --highlight=mail<enter><enter-command>source ~/.mutt/rc/unprint.rc<enter>'
+set print_command="muttPrint --highlight=mail"
+set ?print_command

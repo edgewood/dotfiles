@@ -1,0 +1,16 @@
+set record=+.archive			# overriden by fcc-hooks
+
+# It appears that, in the reverse of the pattern for send-hooks, the *first* matching
+# hook takes effect.
+
+# Messages from Amazon.com
+save-hook "~f .*amazon.com"	+.ecommerce
+
+# override default save-hook
+save-hook "."			"+.%u"
+
+# Specify where to save composed messages
+#   fcc-hook [!]<pattern> <mailbox>
+fcc-hook "~C .*-acceptsub.*@yahoogroups.com"					/dev/null
+
+

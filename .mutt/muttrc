@@ -1,0 +1,200 @@
+# set from and other identity related variables
+source "~/.mutt/rc/identity"
+
+# Howto: mutt with Gmail/IMAP
+# http://crunchbanglinux.org/wiki/howto/howto_setup_mutt_with_gmail_imap
+
+# window title
+set xterm_set_titles=yes
+set xterm_title="mutt (%?u?%u unread ?%?n?%n new ?%m)"
+set xterm_icon="mutt (%?u?%u unread ?%?n?%n new ?%m)"
+
+set editor="~/bin/newsedit"
+set folder="~/mail/"
+set spoolfile="~/mail/"
+set mbox_type=Maildir
+set postponed="=.drafts"
+set query_command="lbdbq '%s'"
+set forward_format="Fwd: %s"
+# remove ^Ms from display
+set display_filter="tr -d '\r'"
+set mh_purge=yes
+# workaround mutt bug for format=flowed messages.  Bug is fixed in 1.5.22
+set wrap=-1
+# Show different date/time formats in index based on message age
+set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
+
+mailboxes =mail =postmaster
+
+# set trash folder to default, because some configs change it
+set trash = ""
+
+set sendmail="~/bin/muttSend"		# muttSend calls /usr/bin/tmda-sendmail
+unset smtp_url				# some configs set it, and it overrides $sendmail
+set alias_file=~/.mutt/aliases
+
+# use header cache, but not for mairix search folder, which has problems
+folder-hook .		"set header_cache=~/.cache/mutt/headers"
+folder-hook =search	"set header_cache="
+
+# make sure all mutt config files are in ~/.mutt, not $HOME
+set mailcap_path=~/.mutt/mailcap
+set certificate_file =~/.mutt/certificates
+
+message-hook .				"auto_view text/html"
+message-hook "~s 'Backup output'"	"auto_view text/html application/octet-stream"
+
+message-hook . "unalternative_order *; alternative_order text/plain text/html"
+message-hook "~f '@proxyvote.com'"	"unalternative_order text/plain"
+message-hook "~f '@uufr.org'"		"unalternative_order text/plain"
+
+set sort=threads
+set sort_aux=last-date-received
+set wait_key=no
+set move=no
+set auto_tag=yes
+set envelope_from=yes
+set edit_headers=yes
+set reverse_alias=yes
+set markers=no
+set metoo=no
+#Linux, screen, and putty/Win all seem to support line chars now
+#set ascii_chars=yes
+set ascii_chars=no
+set text_flowed=yes
+set help=no
+set pgp_mime_signature_filename="signature.txt"
+unset pipe_decode
+
+source ~/.mutt/aliases
+source ~/.mutt/mailinglists
+source ~/.mutt/rc/headers
+source ~/.mutt/rc/print-normal.rc
+source ~/.mutt/rc/crypt
+source ~/.mutt/rc/charset
+source ~/.mutt/rc/save-hook.rc
+source ~/.mutt/rc/send-hook.rc
+
+# Note:  All letters in the reply_regexp must be lower-case, else the
+# entire pattern will be treated as case-sensitive.
+set reply_regexp="^((\
+out of office autoreply:|\
+(\\(fwd\\))|\
+(re(\\[[0-9]\\])?|aw|fw|fwd):\
+)[ \t]*)+"
+
+# Set $strict_threads in large mailboxes (which are likely to have duplicated subjects)
+folder-hook .		set strict_threads=no
+folder-hook =sent	set strict_threads=yes
+folder-hook =.archive*	set strict_threads=yes
+
+# Colors
+source ~/.mutt/rc/colors.rc
+color index     brightyellow default "~h '^X-Archive: Yes'"
+color index     default      default "~h '^X-Archive: Unsure'"
+color index     brightblue   default "~h '^X-Archive: No'"
+color index     brightred    default "~h '^X-Bogosity: (Yes|Spam|Unsure)'"
+color header    brightred    default ^Delivered-To:\ edgewood\\+default\@loghyr\.(farmgate|theblackmans)
+color header	brightred    default ^(Envelope-to|X-Bogosity):
+color header	brightwhite  default "^X-TMDA-Delivered-To:.*ed-keyword-"
+
+bind index <Down> next-entry
+bind index <Up> previous-entry
+bind pager <Up> previous-line
+
+# make replying to the list something I don't have to think about
+message-hook .                    'bind pager l list-reply; bind pager r reply'
+message-hook ~l                   'bind pager r list-reply; bind pager l reply'
+message-hook "~h 'List-Id: <raljc(broadcast|Projects).yahoo'" 'bind pager l reply; bind pager r reply'
+
+macro generic \Cl ":source ~/.mutt/muttrc\n<refresh>"
+
+# classification
+macro index J "<save-message>=.incoming.archive.not\n\n" "mark message not-archivable"
+macro index,pager S "<save-message>=.incoming.spam\n\n" "mark message as spam"
+macro index A "<enter-command>set my_resolve=\$resolve resolve=no<enter>\
+<save-message>=.incoming.archive\n\n<undelete-message>\
+<enter-command>set resolve=\$my_resolve &my_resolve<enter>" "mark message archivable"
+macro index,pager H "<enter-command>set my_resolve=\$resolve resolve=no<enter>\
+<save-message>=.incoming.ham\n\n<undelete-message>\
+<enter-command>set resolve=\$my_resolve &my_resolve<enter>" "mark message as ham"
+
+# open specific boxes
+macro index <Esc>a "<sync-mailbox>!screen -X screen mutt -f =.archive\n"
+macro index <Esc>A "<sync-mailbox>!screen -X screen mutt -f =.archive.not\n"
+macro index <Esc>L "<sync-mailbox>!screen -X screen mutt -f =.lists.inbox\n"
+macro index <Esc>P "<sync-mailbox>!screen -X screen mutt -f =.daemon.pending\n"
+macro index F '<sync-mailbox><enter-command>set my_folder=`mutt-prompt "Change to folder" \\`; push "!screen -X screen mutt -f $my_folder\<enter\>"<enter>'
+macro index <Esc>p "<enter-command>unset pipe_decode<enter><pipe-message>pendingMail\nd"
+
+macro index,pager,browser ,c "<pipe-message>xclip -i\n"
+
+# reply with template
+macro index,pager R "<pipe-message>replyTemplate\n<recall-message>"
+
+# prompt for mairix search parameters
+macro index,pager,browser ,m "\
+<enter-command> set my_wait_key=\$wait_key wait_key=no<enter>\
+<shell-escape>screen -X screen -t 'mutt search' sh -c 'mairixquery && mutt -f =search'<enter>\
+<enter-command>set wait_key=\$my_wait_key &my_wait_key<enter>" "mairix query"
+
+folder-hook =search "set read_only=yes"
+
+# create a mairix search of the messages in this thread
+macro index,pager,browser ,i "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>mairixMessageId<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix Message ID query"
+
+# create a mairix search of the messages with this subject
+macro index,pager,browser ,s "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>mairixSubject<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix Subject query"
+
+# create a mairix search of the messages from or to this sender
+macro index,pager,browser ,f "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>mairixFrom<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix sender query"
+
+# view Office docs in text viewer
+macro attach O "<pipe-entry>muttOffice\n"
+
+# save HTML to disk and print proxy URL
+macro pager ,h "<view-attachments>,h"
+macro attach ,h "<enter-command>set my_wait_key=\$wait_key wait_key=yes<enter>\
+<save-entry>~/mail/mime/mutt.html<enter>o\
+<shell-escape>echo http://loghyr.theblackmans:8000/mime/mutt.html<enter>\
+<enter-command>set wait_key=\$my_wait_key &my_wait_key<enter>" "graphical HTML view"
+
+# Print first page and save to ecommerce folder
+macro index,pager ,p "<enter-command>source ~/.mutt/rc/print-onepage.rc<enter>p\
+<save-message>=.ecommerce\n\n<enter-command>source ~/.mutt/rc/print-normal.rc<enter>" \
+"ecommerce print and save"
+
+# edit labels
+macro index,pager ,l "<enter-command>set my_editor=\$editor editor=\"editlabel menu\"\n\
+<edit><sync-mailbox><enter-command>set editor=\$my_editor\n" "Edit labels"
+
+# show Received headers
+macro index,pager,browser _r "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>formail -X Received: | less<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "list Received:"
+
+# remove sanitized MIME attachments from ~/mail/mime
+macro attach ,R "<pipe-entry>mimeRemoveAll\n"
+
+# save MIME attachments to ~/media/Dropbox/Pictures/incoming
+macro index,pager,browser ,dp "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>dropboxIncomingPictures<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "save pictures to Dropbox"
+
+# kill thread
+macro index,pager,browser _k "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<pipe-entry>extractThreadIDs >> $folder/.nonmail/kill<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "kill thread"
+
