@@ -1,0 +1,344 @@
+# -*- python -*-
+#
+
+#                         :
+#                         |
+#                         V
+#                      getmail
+#                         |   (auto
+# (spam training)         V  training) (ham training) 
+#  incoming.spam  incoming.unknown    incoming.ham
+#      \                 /|\                 /
+#       \          spam / | \ ham           /
+#        '-----. .-----'  |  '-----. .-----'
+#              | |        |        | |
+#              V V        |        | |
+#            mail.spam    |        \ /  (archive training) 
+#                         V         Y
+#                  daemon.pending   |
+#                                   |
+#                                   V
+#                        incoming.archive.unknown
+#                                   |
+#       (no-archive training)       |        (archive training) 
+#           incoming.archive.not    V           incoming.archive
+#                \                 /|\                 /
+#                 \    no-archive / | \ archive       /
+#                  '-----. .-----'  V  '-----. .-----'
+#                        | |  archive.unsure  Y
+#                        | |\                 | 
+#                        V V '----------\     +-------archive
+#                   archive.not         V     V
+#                                     incoming.unsorted
+#                                     / / / / \ \ \ \ \
+#                                    / / / /   \ \ \ \ \
+#                                   ' ' ' '     ' ' ' ' '
+#                                  ' ' ' '       ' ' ' ' '
+#
+# incoming.ham: Mail mistakenly classified as spam are moved here
+# manually. Messages are unregistered as spam, registered as ham and
+# moved to incoming.unsorted.
+#
+# incoming.spam: Mail mistakenly classified as ham are moved here
+# manually. Messages are unregistered as ham, registered as spam and
+# moved to mail.spam.
+#
+# incoming.unknown: This is the main entrance; getmail delivers mail
+# here. Messages that bogofilter thinks are spam are registered as
+# spam and moved to mail.spam. Other messages are registered as ham
+# and moved to incoming.unsorted.
+#
+# incoming.unsorted: Messages are moved, copied and/or forwarded to
+# suitable places. Messages can be moved here manually by a mail
+# client if they need to be resorted without being run through the
+# spam classification process.
+
+import datetime
+import email
+import os
+import pytz
+import re
+import subprocess
+
+# constants
+bogofilter="/usr/bin/bogofilter"
+formail="/usr/bin/reformail"
+version="0.5.0"   # maildirproc version: how can this be calculated?
+
+######################################################################
+# Spam handling
+######################################################################
+def autolearn_and_check_spam(mail):
+    mail.xfilter([bogofilter, "-e", "-u", "-p", ])
+
+    bogosity = mail["x-bogosity"]
+    processor.log("*** bogofilter result: {0!r}".format(bogosity))
+
+    return bogosity
+
+def register_ham(mail):
+    # only undo spam registration if it was classified as spam in the first place
+    if mail["x-bogosity"].matches(r'spam'):
+        processor.log_debug("... unlearning as spam and relearning as ham")
+        args = ["-S", "-n", ]
+    else:
+        processor.log_debug("... not previously learned as spam, so just learning as ham")
+        args = ["-n", ]
+
+    return register_mail(mail,args)
+
+def register_spam(mail):
+    # only undo ham registration if it was classified as ham in the first place
+    if mail["x-bogosity"].matches(r'ham'):
+        processor.log_debug("... unlearning as ham and relearning as spam")
+        args = ["-N", "-s", ]
+    else:
+        processor.log_debug("... not previously learned as ham, so just learning as spam")
+        args = ["-s", ]
+
+    return register_mail(mail,args)
+
+def register_mail(mail, args):
+    # embed mode for rc>0 only for registration failure, passthrough to update the message
+    args[:0] = [bogofilter, "-e", "-p", ]
+
+    return mail.xfilter(args)
+def handle_incoming_ham(mail):
+    processor.log("==> Learning as ham")
+    if register_ham(mail):
+        mail.copy(".daemon.ham")
+        mail.move(".incoming.unsorted")
+    else:
+        processor.log_error("!!! Failed to learn as ham")
+        mail.move(".daemon.sortfailed")
+
+def handle_incoming_spam(mail):
+    processor.log("==> Learning as spam")
+    if register_spam(mail):
+        mail.move(".daemon.spam")
+    else:
+        processor.log_error("!!! Failed to learn as spam")
+        mail.move(".daemon.sortfailed")
+
+def handle_incoming_unknown(mail):
+  if should_deliver_direct(mail):
+    processor.log("... Skipping spam and archive checks")
+    mail.move(processor.maildir_base)
+  else:
+    processor.log("... Autolearning spamicity")
+    bogosity = autolearn_and_check_spam(mail)
+
+    if bogosity.matches("^Spam"):
+        processor.log("==> Spam detected and learned")
+        mail.move(".daemon.spam")
+    else:
+        if bogosity.matches("^Ham"):
+            processor.log("==> Ham detected and learned")
+            mail.copy(".daemon.ham")
+            mail.move(".incoming.archive.unknown")
+        else:
+            processor.log("==> Spamicity unsure")
+            mail.move(".daemon.pending")
+
+######################################################################
+# Archive handling
+######################################################################
+def autolearn_and_check_archive(mail):
+    # don't archive if list headers are set
+    if mail["list-id"] != "" or mail["list-post"] != "":
+      mail.xfilter([formail, "-i",
+        "X-Archive: No, tests=maildirproc, archivicity=0.000000, version=" + version])
+    # otherwise pipe through bogofilter in archivicity mode
+    else:
+      mail.xfilter([bogofilter, "-e", "-u", "-p",
+        "-c", os.path.expanduser("~/.bogofilter/config.archive"), ])
+
+    bogosity = mail["x-archive"]
+    processor.log("*** bogofilter result: {0!r}".format(bogosity))
+
+    return bogosity
+
+def register_archive(mail):
+    # only undo no-archive registration if it was classified as no-archive in the first place
+    if mail["x-archive"].matches(r'no'):
+        processor.log_debug("... unlearning as no-archive and relearning as archive")
+        args = ["-S", "-n", ]
+    else:
+        processor.log_debug("... not previously learned as no-archive, so just learning as archive")
+        args = ["-n", ]
+
+    return register_archive_mail(mail,args)
+
+def register_noarchive(mail):
+    # only undo archive registration if it was classified as archive in the first place
+    if mail["x-archive"].matches(r'yes'):
+        processor.log_debug("... unlearning as archive and relearning as no-archive")
+        args = ["-N", "-s", ]
+    else:
+        processor.log_debug("... not previously learned as archive, so just learning as no-archive")
+        args = ["-s", ]
+
+    return register_archive_mail(mail,args)
+
+def register_archive_mail(mail, args):
+    # embed mode for rc>0 only for registration failure, passthrough to update the message
+    args[:0] = [bogofilter, "-e", "-p", "-c", os.path.expanduser("~/.bogofilter/config.archive"), ]
+
+    return mail.xfilter(args)
+
+def handle_incoming_archive(mail):
+    processor.log("==> Learning as archive")
+    if register_archive(mail):
+        mail.move(".archive")
+    else:
+        processor.log_error("!!! Failed to learn as archive")
+        mail.move(".daemon.sortfailed")
+
+def handle_incoming_noarchive(mail):
+    processor.log("==> Learning as noarchive")
+    if register_noarchive(mail):
+        mail.move(".archive.not")
+    else:
+        processor.log_error("!!! Failed to learn as noarchive")
+        mail.move(".daemon.sortfailed")
+
+def handle_incoming_archive_unknown(mail):
+    processor.log("... Autolearning archivicity")
+    archivicity = autolearn_and_check_archive(mail)
+
+    if archivicity.matches("^No"):
+      processor.log("==> No-archive detected and learned")
+      mail.copy(".archive.not")
+    else:
+      if archivicity.matches("^Yes"):
+        processor.log("==> Archive detected and learned")
+        mail.copy(".archive")
+      else:
+        processor.log("==> Archivicity unsure")
+        mail.copy(".archive.unsure")
+
+    mail.move(".incoming.unsorted")
+
+######################################################################
+# Utility methods
+######################################################################
+
+# return true if message should skip archive and spam registration and filing
+def should_deliver_direct(mail):
+  if mail['subject'].matches(r'Held in pending'):
+    return True
+  elif mail['from'].matches('qcsummary@onebox.com'):
+    return True
+  else:
+    return False
+
+# deliver apt-listchanges mail to inbox or delete
+def apt_listchanges(mail):
+  # only deliver on Monday
+  # procmail also delivered if any of the updates were NOT urgency=low,
+  # but that logic never really got used
+  now = datetime.datetime.now(pytz.timezone('US/Eastern'))
+  if now.weekday() != 0:
+    mail.delete()
+  else:
+    mail.move(processor.maildir_base)
+
+# extract the listname from headers
+def extract_list_name(mail):
+  id = str(mail["list-id"])
+  post = str(mail["list-post"])
+
+  # if list name can't be pulled RFC-2369 and RFC-2919 specified headers, return empty string
+  name = ""
+
+  # Look in List-Id first, as it's more regular
+  if id != "":
+    # eg, 'blah users list <blah.example.com>'
+    search = re.search(r'<([^>]+)>', id, re.IGNORECASE)
+    if search:
+      name = search.group(1)
+    else:
+      processor.log_error("!!! Couldn't extract listname from " + id)
+      
+  if name == "" and post != "":
+    # eg, '<http://example.com/group/blah/post?hl=en_US>, <mailto:blah@example.com>'
+    search = re.search(r'<mailto:([^>]+)>', post, re.IGNORECASE)
+    if search:
+      post_email = search.group(1)
+      name = re.sub(r'@', r'.', post_email)
+    else:
+      processor.log_error("!!! Couldn't extract listname from " + post)
+
+  # listname_id.rc for procmail looks for other headers from before the RFCs as
+  # a fallback, but for now just give up
+  return name
+
+
+######################################################################
+# Sorting
+######################################################################
+
+def handle_incoming_unsorted(mail):
+  if mail["subject"].matches(r'(Debian|Ubuntu) package updates on'):
+    apt_listchanges(mail)
+  elif mail["from"].matches(r'spong@loghyr') and mail["subject"].matches(r'spong - '):
+    if mail["X-SpongFiltered"].matches(r'true'):
+      mail.move(processor.maildir_base)
+    else:
+      processor.log("... saving for further consideration")
+      mail.move(".daemon.spong")
+  # deliver "I will teach you to be rich" emails to same folder as IWTYTBR RSS feed
+  elif mail["sender"].matches(r'mailer@infusionmail.com'):
+    mail.move(".feeds.misc")
+  else:
+    name = extract_list_name(mail)
+    if name in list_mapping.keys():
+      for mailbox in list_mapping[name]:
+        mail.copy(mailbox)
+      # move to .lists.X, where X is the first dot delimited word
+      list_shortname = ".lists." + re.split(r'\.', name)[0]
+      mail.move(list_shortname)
+    else:
+      mail.move(processor.maildir_base)
+
+######################################################################
+# Mapping and processing
+######################################################################
+processor.maildir_base = "~/mail"
+processor.auto_reload_rcfile = True
+
+# lists that should go somewhere other than just maildir_base
+# 
+# Mails to any list in the mapping are copied to each of the mailboxes
+# listed, AND to ".lists.X" where X is the first '.' delimited word in the name.
+#
+# List mails to listnames NOT in the mapping just go to maildir_base
+list_mapping = {
+    "raljcProjects.yahoogroups.com": [ processor.maildir_base ],
+    "raljcbroadcast.yahoogroups.com": [ processor.maildir_base ],
+    "hobynccommittee.googlegroups.com": [ processor.maildir_base ],
+    "bogofilter.bogofilter.org": [ ".lists.inbox" ],
+    "duplicity-talk.nongnu.org": [ ".lists.inbox" ],
+    "EyeFiHacking.yahoogroups.com": [ ".lists.inbox" ],
+    "git-users.googlegroups.com": [ ".lists.inbox" ],
+    "mutt-users.mutt.org": [ ".lists.inbox" ],
+    "procmail.lists.RWTH-Aachen.de": [ ".lists.inbox" ],
+    "remind-fans.lists.roaringpenguin.com": [ ".lists.inbox" ],
+    "screen-users.gnu.org": [ ".lists.inbox" ],
+    "todotxt.yahoogroups.com": [ ".lists.inbox" ],
+    "vim_use.googlegroups.com": [ ".lists.inbox" ],
+    }
+
+handle_mapping = {
+    ".incoming.ham": handle_incoming_ham,
+    ".incoming.spam": handle_incoming_spam,
+    ".incoming.unknown": handle_incoming_unknown,
+    ".incoming.archive": handle_incoming_archive,
+    ".incoming.archive.not": handle_incoming_noarchive,
+    ".incoming.archive.unknown": handle_incoming_archive_unknown,
+    ".incoming.unsorted": handle_incoming_unsorted,
+    }
+processor.maildirs = handle_mapping.keys()
+
+for mail in processor:
+    handle_mapping[mail.maildir](mail)
