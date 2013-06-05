@@ -1,0 +1,8 @@
+INCLUDE [getenv("HOME")]/.remind/functions
+INCLUDE [getenv("HOME")]/.remind/calendar
+INCLUDE [getenv("HOME")]/.remind/months
+INCLUDE [getenv("HOME")]/.remind/birthdays
+INCLUDE [getenv("HOME")]/.remind/jaycee
+INCLUDE [getenv("HOME")]/.remind/monthly       # Reminders that occur every month
+
+REM Nov 5 2012 MSG HOBY T-shirt Day

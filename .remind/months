@@ -1,0 +1,12 @@
+INCLUDE [getenv("HOME")]/.remind/01-Jan
+INCLUDE [getenv("HOME")]/.remind/02-Feb
+INCLUDE [getenv("HOME")]/.remind/03-Mar
+INCLUDE [getenv("HOME")]/.remind/04-Apr
+INCLUDE [getenv("HOME")]/.remind/05-May
+INCLUDE [getenv("HOME")]/.remind/06-Jun
+INCLUDE [getenv("HOME")]/.remind/07-Jul
+INCLUDE [getenv("HOME")]/.remind/08-Aug
+INCLUDE [getenv("HOME")]/.remind/09-Sep
+INCLUDE [getenv("HOME")]/.remind/10-Oct
+INCLUDE [getenv("HOME")]/.remind/11-Nov
+INCLUDE [getenv("HOME")]/.remind/12-Dec

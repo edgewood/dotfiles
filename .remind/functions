@@ -1,0 +1,33 @@
+# Handy constants/function for specifing week of month...
+SET  Week_1		 1
+SET  Week_2		 8
+SET  Week_3		15
+SET  Week_4		22
+FSET _last(mo)		"1 " + MON((mo%12)+1)+" --7"
+
+# Shorthand for commonly used expression...
+FSET _trig()		TRIGGER(TRIGDATE())
+
+# Handy function to provide SCANFROM dates...
+FSET _back(days)	TRIGGER(TODAY()-days)
+
+# Floating reminders and due dates
+FSET float(y,m,d) trigger(MAX(realtoday(), date(y,m,d)))
+FSET due(y,m,d) "(" + (date(y,m,d)-trigdate()) + ")"
+FSET _float(m,d) trigger(MAX(realtoday(), date(year(today()),m,d)))
+FSET _due(m,d) "(" + (date(year(today()),m,d)-trigdate()) + ")"
+
+# Probablistic reminder
+FSET oneInX(x) shell("bash -c 'echo $(($RANDOM % " + x + "))'") == "0"
+
+# call todo when the reminder is triggered, and not otherwise
+FSET todo(msg) iif(today()==realtoday(),"$HOME/bin/todo adduniq '" + dosubst(msg + "'%"),"")
+
+# scheduling function for ~/.remind/calendar
+# Reminders at 1 hour before, 15 minutes, 5 minutes, and time of event
+FSET _sfun(x) choose(x, -60, 45, 10, 0)
+
+# Repeat a reminder, starting on date, once every period for count times
+FSET _repeat(date,period,count) "*"+period+" "+trigger(date)+" UNTIL "+trigger(date+(count-1)*period)
+# eg, once a week for 4 weeks, starting on Mar 23 2009
+# REM [_repeat('2009-03-23', 7, 4)] MSG foo
