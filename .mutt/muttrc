@@ -9,7 +9,7 @@ set xterm_set_titles=yes
 set xterm_title="mutt (%?u?%u unread ?%?n?%n new ?%m)"
 set xterm_icon="mutt (%?u?%u unread ?%?n?%n new ?%m)"
 
-set editor="~/bin/newsedit"
+set editor="~/.mutt/bin/editor"
 set folder="~/mail/"
 set spoolfile="~/mail/"
 set mbox_type=Maildir
