@@ -29,7 +29,7 @@ mailboxes =mail =postmaster
 # set trash folder to default, because some configs change it
 set trash = ""
 
-set sendmail="~/bin/muttSend"		# muttSend calls /usr/bin/tmda-sendmail
+set sendmail="~/.mutt/bin/muttSend"	# muttSend calls sendmail
 unset smtp_url				# some configs set it, and it overrides $sendmail
 set alias_file=~/.mutt/aliases
 
