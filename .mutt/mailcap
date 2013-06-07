@@ -2,17 +2,17 @@
 #image/*; display %s
 image/*; evince-previewer %s
 # Word 
-application/msword; ~/bin/antiword %s; copiousoutput;
-application/octet-stream; ~/bin/antiword %s; copiousoutput; test=echo %s|grep -Eqi "docx?$"
-application/vnd.openxmlformats-officedocument.wordprocessingml.document; ~/bin/antiword %s; copiousoutput;
-application/rtf; ~/bin/antiword %s; copiousoutput;
+application/msword; antioffice word %s; copiousoutput;
+application/octet-stream; antioffice word %s; copiousoutput; test=echo %s|grep -Eqi "docx?$"
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; antioffice word %s; copiousoutput;
+application/rtf; antioffice word %s; copiousoutput;
 # PDF
 application/pdf; pdfread %s
 application/octet-stream; pdfread %s; test=echo %s|grep -qi "pdf$"
 # Excel
-application/vnd.ms-excel; antiexcel %s; copiousoutput;
-application/octet-stream; antiexcel %s; copiousoutput; test=echo %s|grep -qi "xls$"
-application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; antiexcel %s; copiousoutput;
+application/vnd.ms-excel; antioffice excel %s; copiousoutput;
+application/octet-stream; antioffice excel %s; copiousoutput; test=echo %s|grep -qi "xls$"
+application/vnd.openxmlformats-officedocument.spreadsheetml.sheet; antioffice excel %s; copiousoutput;
 # HTML
 text/html; links %s; nametemplate=%s.html
 text/html; links -dump %s; nametemplate=%s.html; copiousoutput;
