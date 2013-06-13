@@ -1,107 +1,103 @@
-# ~/.bashrc: executed by bash(1) for non-login shells.
-# see /usr/share/doc/bash/examples/startup-files (in the package bash-doc)
-# for examples
+# .bashrc
 
-# If not running interactively, don't do anything
-[ -z "$PS1" ] && return
-
-# don't put duplicate lines or lines starting with space in the history.
-# See bash(1) for more options
-HISTCONTROL=ignoreboth
-
-# append to the history file, don't overwrite it
-shopt -s histappend
-
-# for setting history length see HISTSIZE and HISTFILESIZE in bash(1)
-HISTSIZE=1000
-HISTFILESIZE=2000
-
-# check the window size after each command and, if necessary,
-# update the values of LINES and COLUMNS.
-shopt -s checkwinsize
-
-# If set, the pattern "**" used in a pathname expansion context will
-# match all files and zero or more directories and subdirectories.
-#shopt -s globstar
-
-# make less more friendly for non-text input files, see lesspipe(1)
-[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh lesspipe)"
-
-# set variable identifying the chroot you work in (used in the prompt below)
-if [ -z "$debian_chroot" ] && [ -r /etc/debian_chroot ]; then
-    debian_chroot=$(cat /etc/debian_chroot)
+# Source global definitions.  Do this first so my aliases override globals.
+if [ -f /etc/bashrc ]; then
+	. /etc/bash.bashrc
 fi
 
-# set a fancy prompt (non-color, unless we know we "want" color)
-case "$TERM" in
-    xterm-color) color_prompt=yes;;
-esac
+export PATH=$PATH:$HOME/bin
+export PS1='[${debian_chroot:+($debian_chroot)}\u@\h \W]\$ '
 
-# uncomment for a colored prompt, if the terminal has the capability; turned
-# off by default to not distract the user: the focus in a terminal window
-# should be on the output of commands, not on the prompt
-#force_color_prompt=yes
+if [ $TERM != linux ]; then
+  export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
+fi
 
-if [ -n "$force_color_prompt" ]; then
-    if [ -x /usr/bin/tput ] && tput setaf 1 >&/dev/null; then
-	# We have color support; assume it's compliant with Ecma-48
-	# (ISO/IEC-6429). (Lack of such support is extremely rare, and such
-	# a case would tend to support setf rather than setaf.)
-	color_prompt=yes
-    else
-	color_prompt=
+# User specific aliases and functions
+alias ls='ls --color=tty'
+#alias rm='rm -i'
+alias cp='cp -i'
+alias mv='mv -i'
+alias home='cd ~; clear'
+alias bc='\bc ~/.bcrc'
+
+export RSYNC_RSH=ssh
+
+if [ "$REMOTE" = "1" ]; then
+  . ~/.Xdisplay
+fi
+
+if tty >/dev/null; then
+  . $HOME/bin/keychainStartup
+
+  # background process startup
+  if ! ps -fC musicFind | grep -q $HOME/bin/musicFind; then
+    detach $HOME/bin/musicFind
+  fi 
+
+  if ! ps -fC python | grep -q $HOME/bin/onmount; then
+    detach "$HOME/bin/onmount"
+  fi
+
+  if ! ps -fC python | grep -q EyeFiServer.py; then
+    ( cd "$HOME/projects/EyeFiServer/Release 2.0"; daemonize python EyeFiServer.py -c edgewood.ini )
+  fi
+fi
+
+export EDITOR=vim
+
+## History control
+
+export HISTCONTROL=erasedups
+export HISTFILESIZE=50000
+export HISTSIZE=1000
+
+# use a separate file for screen windows 1 and 2
+rjchist="$HOME/projects/rjchistory.txt"
+
+[ "$WINDOW" = "1" -a -e "$rjchist" ] && { HISTFILE="$rjchist"; }
+[ "$WINDOW" = "2" -a -e "$rjchist" ] && { HISTFILE="$rjchist"; }
+
+## Completions
+
+# todo
+
+# use the name you invoke todo.sh with on the command line (eg, replace with t
+# if you alias todo to t
+todo=todo
+
+# bash completions for todo
+function _mycomplete_todo()
+{
+  local cmd=${COMP_CWORD} #Where in the command are we?
+  local word=${COMP_WORDS[COMP_CWORD]} #What have we got so far?
+  if ((cmd==1)); then
+    # Complete list of functions
+    # FIXME:Generate automatically
+    COMPREPLY=($(compgen -W "add addto append archive command del depri do
+    help list listall listcon listfile listpri listproj move prepend pri replace
+    report" -- "${word}"));
+  else
+    # Complete projects and contexts
+    COMPREPLY=($(compgen -W "$(todo lsprj) $(todo lsc)" -- "${word}"));
+
+    # No match, try to turn text into an item number
+    if [ -z "$COMPREPLY" ]; then
+      IFS=$'\n' # Split on carriage return only
+      # FIXME:A more "raw" todo ls would be better here
+      COMPREPLY=($(todo -p ls | grep "${word}"))
+      unset IFS; # Restore default value
+
+      if ((${#COMPREPLY[@]}==1)); then
+        # Only one project matched, so replace text with item number
+        local -a item=(${COMPREPLY[0]});
+        COMPREPLY=${item[0]};
+      fi
     fi
-fi
+  fi
+}
 
-if [ "$color_prompt" = yes ]; then
-    PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-else
-    PS1='${debian_chroot:+($debian_chroot)}\u@\h:\w\$ '
-fi
-unset color_prompt force_color_prompt
+complete -F _mycomplete_todo $todo
+complete -F _mycomplete_todo t
 
-# If this is an xterm set the title to user@host:dir
-case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
-esac
-
-# enable color support of ls and also add handy aliases
-if [ -x /usr/bin/dircolors ]; then
-    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
-    alias ls='ls --color=auto'
-    #alias dir='dir --color=auto'
-    #alias vdir='vdir --color=auto'
-
-    alias grep='grep --color=auto'
-    alias fgrep='fgrep --color=auto'
-    alias egrep='egrep --color=auto'
-fi
-
-# some more ls aliases
-alias ll='ls -alF'
-alias la='ls -A'
-alias l='ls -CF'
-
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
-alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history|tail -n1|sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
-
-# Alias definitions.
-# You may want to put all your additions into a separate file like
-# ~/.bash_aliases, instead of adding them here directly.
-# See /usr/share/doc/bash-doc/examples in the bash-doc package.
-
-if [ -f ~/.bash_aliases ]; then
-    . ~/.bash_aliases
-fi
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
+# prevent Mono from creating $HOME/.wapi
+export MONO_DISABLE_SHM=1
