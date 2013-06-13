@@ -39,7 +39,7 @@ if tty >/dev/null; then
   fi
 
   if ! ps -fC python | grep -q EyeFiServer.py; then
-    ( cd "$HOME/projects/EyeFiServer/Release 2.0"; daemonize python EyeFiServer.py -c edgewood.ini )
+    ( cd "$HOME/projects/EyeFiServer/Release 2.0"; detach python EyeFiServer.py -c edgewood.ini )
   fi
 fi
 
