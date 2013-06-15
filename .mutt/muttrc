@@ -124,7 +124,7 @@ macro index <Esc>a "<sync-mailbox>!screen -X screen mutt -f =.archive\n"
 macro index <Esc>A "<sync-mailbox>!screen -X screen mutt -f =.archive.not\n"
 macro index <Esc>L "<sync-mailbox>!screen -X screen mutt -f =.lists.inbox\n"
 macro index <Esc>P "<sync-mailbox>!screen -X screen mutt -f =.daemon.pending\n"
-macro index F '<sync-mailbox><enter-command>set my_folder=`mutt-prompt "Change to folder" \\`; push "!screen -X screen mutt -f $my_folder\<enter\>"<enter>'
+macro index F '<sync-mailbox><enter-command>set my_folder=`~/.mutt/bin/mutt-prompt "Change to folder" \\`; push "!screen -X screen mutt -f $my_folder\<enter\>"<enter>'
 macro index <Esc>p "<enter-command>unset pipe_decode<enter><pipe-message>pendingMail\nd"
 
 macro index,pager,browser ,c "<pipe-message>xclip -i\n"
