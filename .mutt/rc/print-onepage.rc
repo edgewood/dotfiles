@@ -1,4 +1,4 @@
 macro index  ":source ~/.mutt/rc/print-normal.rc\n"
-macro index,pager p '<enter-command>source ~/.mutt/rc/print.rc<enter><pipe-message>muttPrint --highlight=mail -a 1<enter><enter-command>source ~/.mutt/rc/unprint.rc<enter>'
-set print_command="muttPrint --highlight=mail -a 1"
+macro index,pager p '<enter-command>source ~/.mutt/rc/print.rc<enter><pipe-message>~/.mutt/bin/muttPrint --highlight=mail -a 1<enter><enter-command>source ~/.mutt/rc/unprint.rc<enter>'
+set print_command="~/.mutt/bin/muttPrint --highlight=mail -a 1"
 set ?print_command
