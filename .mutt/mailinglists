@@ -13,6 +13,7 @@ subscribe todotxt@yahoogroups.com
 subscribe HOBYNCCommittee@googlegroups.com HOBYNCAdvisoryCommittee@googlegroups.com
 subscribe vim_use@googlegroups.com
 subscribe remind-fans@lists.roaringpenguin.com
+subscribe NCJCISenate@yahoogroups.com
 
 # set save-to folder name to be the list name for Yahoo Groups lists
 save-hook '~h "List-Id: .*yahoogroups.com"' =%B
