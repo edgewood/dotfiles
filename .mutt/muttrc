@@ -189,7 +189,7 @@ macro attach ,R "<pipe-entry>mimeRemoveAll\n"
 # save MIME attachments to ~/media/Dropbox/Pictures/incoming
 macro index,pager,browser ,dp "\
 <enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
-<pipe-entry>dropboxIncomingPictures<enter>\
+<pipe-entry>~/.mutt/bin/dropboxIncomingPictures<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "save pictures to Dropbox"
 
 # kill thread
