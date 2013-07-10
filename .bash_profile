@@ -30,3 +30,12 @@ if [ -n "$DISPLAY" ]; then
   stty start ''
   stty stop ''
 fi
+
+# point to locate databases inside encrypted space
+LOCATE_PATH=""
+for p in "$HOME"/.cache/mlocate/*.db; do
+  LOCATE_PATH="$LOCATE_PATH:$p"
+done
+LOCATE_PATH=${LOCATE_PATH##:}	# delete leading : chars
+
+export LOCATE_PATH
