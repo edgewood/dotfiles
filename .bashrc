@@ -42,7 +42,9 @@ if tty >/dev/null; then
     ( cd "$HOME/projects/EyeFiServer/Release 2.0"; detach python EyeFiServer.py -c edgewood.ini )
   fi
 
-  xrdb -merge ~/.config/Xresources
+  if [ -n "$DISPLAY" ]; then
+    xrdb -merge ~/.config/Xresources
+  fi
 fi
 
 export EDITOR=vim
