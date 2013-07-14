@@ -6,10 +6,11 @@ if [ -f ~/.bashrc ]; then
 fi
 
 # Create temp directory and check ~/tmp link
-if [ ! -d "/tmp/tmp-$USER" ]; then
-    mkdir -p "/tmp/tmp-$USER"
-    chmod 700 "/tmp/tmp-$USER"
-    touch "/tmp/tmp-$USER/.nobackup"
+usertemp="/tmp/tmp-$USER"
+if [ ! -d "$usertemp" ]; then
+    mkdir -p "$usertemp"
+    chmod 700 "$usertemp"
+    touch "$usertemp/.nobackup"
 fi
 
 if [ "$( readlink ~/tmp )" != "../../tmp/tmp-$USER" ]; then
