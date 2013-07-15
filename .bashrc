@@ -34,10 +34,6 @@ if tty >/dev/null; then
     detach $HOME/bin/musicFind
   fi 
 
-  if ! ps -fC python | grep -q $HOME/bin/onmount; then
-    detach "$HOME/bin/onmount"
-  fi
-
   if ! ps -fC python | grep -q EyeFiServer.py; then
     ( cd "$HOME/projects/EyeFiServer/Release 2.0"; detach python EyeFiServer.py -c edgewood.ini )
   fi
