@@ -130,7 +130,7 @@ macro index <Esc>p "<enter-command>unset pipe_decode<enter><pipe-message>pending
 macro index,pager,browser ,c "<pipe-message>xclip -i\n"
 
 # reply with template
-macro index,pager R "<pipe-message>replyTemplate\n<recall-message>"
+macro index,pager R "<pipe-message>~/.mutt/bin/replyTemplate\n<recall-message>"
 
 # prompt for mairix search parameters
 macro index,pager,browser ,m "\
