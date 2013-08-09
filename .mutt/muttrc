@@ -149,13 +149,13 @@ macro index,pager,browser ,i "\
 # create a mairix search of the messages with this subject
 macro index,pager,browser ,s "\
 <enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
-<pipe-entry>mairixSubject<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<pipe-entry>~/.mutt/bin/mairixSubject<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix Subject query"
 
 # create a mairix search of the messages from or to this sender
 macro index,pager,browser ,f "\
 <enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
-<pipe-entry>mairixFrom<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<pipe-entry>~/.mutt/bin/mairixFrom<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix sender query"
 
 # view Office docs in text viewer
