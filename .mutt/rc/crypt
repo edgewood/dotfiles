@@ -33,7 +33,7 @@ crypt-hook sherman@pcsherman.com sherman@unx.sas.com
 
 # Autoencrypt if every recipient has a GPG key
 send-hook '!~G ^%C gpg' 'set crypt_autoencrypt=yes'                                          
-source ~/bin/muttGpgListKeys|
+source ~/.mutt/bin/muttGpgListKeys|
 
 send-hook "~C jb@jbacher.com" set pgp_create_traditional=ask-yes
 send-hook "~C valentineclown@earthlink.net" set crypt_autosign=no
