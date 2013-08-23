@@ -35,10 +35,8 @@ crypt-hook sherman@pcsherman.com sherman@unx.sas.com
 send-hook '!~G ^%C gpg' 'set crypt_autoencrypt=yes'                                          
 source ~/.mutt/bin/muttGpgListKeys|
 
-send-hook "~C jb@jbacher.com" set pgp_create_traditional=ask-yes
 send-hook "~C valentineclown@earthlink.net" set crypt_autosign=no
 send-hook "~C tblackman1@earthlink.net" set crypt_autosign=no
-send-hook "~C @accis.edu|~C @americansentinel.edu" set crypt_autosign=no
 send-hook "~C .*@yahoogroups.com" set crypt_autosign=no
 send-hook "~C .*@googlegroups.com" set crypt_autosign=no
 
