@@ -29,10 +29,6 @@ fi
 if tty >/dev/null; then
   . $HOME/bin/keychainStartup
 
-  if [ -n "$DISPLAY" ]; then
-    xrdb -merge ~/.config/Xresources
-  fi
-
   # background process startup
   if ! ps -fC python | grep -q EyeFiServer.py; then
     ( cd "$HOME/projects/EyeFiServer/Release 2.0"; detach python EyeFiServer.py -c edgewood.ini )
