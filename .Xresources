@@ -11,3 +11,15 @@ UXTerm*rightScrollBar:	true
 UXTerm*jumpScroll:	true
 UXTerm*multiScroll:	true
 UXTerm*toolBar:		true
+
+!rxvt-unicode: -geometry 100x25 -bg black -fg green -fn "xft:Droid Sans Mono:size=10" -sr -sk -bc -sl 15000 
+URxvt*geometry:		100x25
+URxvt*background:	black
+URxvt*foreground:	green
+URxvt*font: 		xft:Droid Sans Mono:size=10
+URxvt*scrollBar_right:	true
+URxvt*scrollTtyKeypress:true
+URxvt*cursorBlink:	true
+URxvt*saveLines:	25000
+
+
