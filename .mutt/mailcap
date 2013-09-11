@@ -7,7 +7,7 @@ application/octet-stream; antioffice word %s; copiousoutput; test=echo %s|grep -
 application/vnd.openxmlformats-officedocument.wordprocessingml.document; antioffice word %s; copiousoutput;
 application/rtf; antioffice word %s; copiousoutput;
 # PDF
-application/pdf; pdfread %s
+application/pdf; evince %s
 application/octet-stream; pdfread %s; test=echo %s|grep -qi "pdf$"
 # Excel
 application/vnd.ms-excel; antioffice excel %s; copiousoutput;
