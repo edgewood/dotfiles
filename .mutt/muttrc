@@ -113,6 +113,9 @@ message-hook "~h 'List-Id: <raljc(broadcast|Projects).yahoo'" 'bind pager l repl
 
 macro generic \Cl ":source ~/.mutt/muttrc\n<refresh>"
 
+# save in specific boxes
+macro index,pager -n "<save-message>=.lists.newsletters<enter><enter>" "save message to lists.newsletters"
+
 # classification
 macro index J "<save-message>=.incoming.archive.not\n\n" "mark message not-archivable"
 macro index,pager S "<save-message>=.incoming.spam\n\n" "mark message as spam"
