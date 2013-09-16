@@ -66,6 +66,10 @@ set help=no
 set pgp_mime_signature_filename="signature.txt"
 unset pipe_decode
 
+# the most frequent thing I do in the file browser is search for 
+# Maildirs, so optimize mask for that case
+set mask="^\."
+
 source ~/.mutt/aliases
 source ~/.mutt/mailinglists
 source ~/.mutt/rc/headers
