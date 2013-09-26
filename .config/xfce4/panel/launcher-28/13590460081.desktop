@@ -1,0 +1,14 @@
+
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=firefox -new-instance -P secure
+Icon=/home/edblac/.icons/firefox-alt.png
+StartupNotify=true
+Terminal=false
+Categories=Utility;X-XFCE;X-Xfce-Toplevel;
+OnlyShowIn=XFCE;
+Name=Firefox - secure
+Comment=Browse the World Wide Web
+X-XFCE-Source=file:///usr/share/applications/xfrun4.desktop
+Path=
