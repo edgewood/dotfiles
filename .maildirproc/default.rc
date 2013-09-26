@@ -325,6 +325,7 @@ list_mapping = {
     "procmail.lists.RWTH-Aachen.de": [ ".lists.inbox" ],
     "remind-fans.lists.roaringpenguin.com": [ ".lists.inbox" ],
     "screen-users.gnu.org": [ ".lists.inbox" ],
+    "trilug.trilug.org": [ ".lists.inbox" ],
     "todotxt.yahoogroups.com": [ ".lists.inbox" ],
     "vim_use.googlegroups.com": [ ".lists.inbox" ],
     }
