@@ -1,22 +1,53 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
+# .bash_profile
 
-# the default umask is set in /etc/profile; for setting the umask
-# for ssh logins, install and configure the libpam-umask package.
-#umask 022
-
-# if running bash
-if [ -n "$BASH_VERSION" ]; then
-    # include .bashrc if it exists
-    if [ -f "$HOME/.bashrc" ]; then
-	. "$HOME/.bashrc"
-    fi
+# Get the aliases and functions
+if [ -f ~/.bashrc ]; then
+	. ~/.bashrc
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/bin" ] ; then
-    PATH="$HOME/bin:$PATH"
+# Create temp directory and check ~/tmp link
+usertemp="/tmp/tmp-$USER"
+if [ ! -d "$usertemp" ]; then
+    mkdir -p "$usertemp"
+    chmod 700 "$usertemp"
+    touch "$usertemp/.nobackup"
 fi
+
+if [ "$( readlink ~/tmp )" != "../../tmp/tmp-$USER" ]; then
+    rm -f ~/tmp
+    ln -s "../../tmp/tmp-$USER" ~/tmp
+fi
+unset usertemp
+
+# create temp directory for vim swap files that persists across reboots
+# requires 'set directory=/var/tmp/vim-$USER,'... in .vimrc
+usertemp="/var/tmp/vim-$USER"
+if [ ! -d "$usertemp" ]; then
+    mkdir -p "$usertemp"
+    chmod 700 "$usertemp"
+    touch "$usertemp/.nobackup"
+fi
+unset usertemp
+
+# User specific environment and startup programs
+PATH=$PATH:$HOME/bin
+ENV=$HOME/.bashrc
+
+export ENV PATH
+
+export MAILPATH=
+
+# Disable XON/XOFF flow control in GUI environments
+if [ -n "$DISPLAY" ]; then
+  stty start ''
+  stty stop ''
+fi
+
+# point to locate databases inside encrypted space
+LOCATE_PATH=""
+for p in "$HOME"/.cache/mlocate/*.db; do
+  LOCATE_PATH="$LOCATE_PATH:$p"
+done
+LOCATE_PATH=${LOCATE_PATH##:}	# delete leading : chars
+
+export LOCATE_PATH
