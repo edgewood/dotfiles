@@ -5,7 +5,9 @@
 " 
 " by Christian Brabandt <cblists@256bit.org>
 " http://www.256bit.org/~chrisbra/configs/vim/ftplugin/mail/format.vim
-
+"
+" 2013-10-07: adds fo+=q in 'Quotation', fo-=q elsewhere
+" Ed Blackman <ed@edgewood.to>
 
 let d_fo = &fo
 let s:defaults = 'setlocal tw=72 ts=8 softtabstop=2 sw=2 fo='.d_fo
@@ -60,19 +62,19 @@ function! s:AreaOptions()
     execute s:defaults
     if <SID>CheckArea('\v^From( |: ).*\n','\v^$')
         "echo 'Header'
-        setlocal fo-=a fo-=w fo-=t softtabstop=0 sw=8 noet
+        setlocal fo-=a fo-=w fo-=t fo-=q softtabstop=0 sw=8 noet
     elseif getline('.') =~ '\m^\s*>'
         "echo 'Quotation'
-        setlocal fo-=a fo-=w
+        setlocal fo-=a fo-=w fo+=q
     elseif <SID>CheckArea('\m^--- .*\n^+++ ','\v(^$|\n^-- $)')
         "echo 'Patch'
-        setlocal fo-=a fo-=w fo-=t softtabstop=0 sw=8 noet
+        setlocal fo-=a fo-=w fo-=t fo-=q softtabstop=0 sw=8 noet
     elseif <SID>CheckArea('.*\n-- $','^$')
         "echo 'Signature'
-        setlocal fo-=a fo-=w fo-=t softtabstop=0 sw=8 noet
+        setlocal fo-=a fo-=w fo-=t fo-=q softtabstop=0 sw=8 noet
     else
         "echo 'My text'
-        setlocal fo+=aw et
+        setlocal fo+=aw fo-=q et
     endif
 endfunction
 
