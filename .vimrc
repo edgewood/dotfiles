@@ -4,6 +4,9 @@ set background=dark
 set backspace=indent,eol,start
 set hidden
 
+" Show a '$' at the end of substitution motions
+set cpoptions+=$
+
 " Change C-u and C-w to set an undo point first
 " http://vim.wikia.com/wiki/Recover_from_accidental_Ctrl-U
 inoremap <c-u> <c-g>u<c-u>
