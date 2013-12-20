@@ -150,7 +150,7 @@ folder-hook =search "set read_only=yes"
 # create a mairix search of the messages in this thread
 macro index,pager,browser ,i "\
 <enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
-<pipe-entry>mairixMessageId<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
+<pipe-entry>~/.mutt/bin/mairixMessageId<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix Message ID query"
 
 # create a mairix search of the messages with this subject
