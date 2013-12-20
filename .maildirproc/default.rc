@@ -314,6 +314,8 @@ processor.auto_reload_rcfile = True
 #
 # List mails to listnames NOT in the mapping just go to maildir_base
 list_mapping = {
+    "raljcProjects.googlegroups.com": [ processor.maildir_base ],
+    "raljcbroadcast.googlegroups.com": [ processor.maildir_base ],
     "raljcProjects.yahoogroups.com": [ processor.maildir_base ],
     "raljcbroadcast.yahoogroups.com": [ processor.maildir_base ],
     "hobynccommittee.googlegroups.com": [ processor.maildir_base ],
