@@ -58,30 +58,30 @@ rjchist="$HOME/projects/rjchistory.txt"
 todo=todo
 
 # bash completions for todo
-function _mycomplete_todo()
+_mycomplete_todo()
 {
   local cmd=${COMP_CWORD} #Where in the command are we?
   local word=${COMP_WORDS[COMP_CWORD]} #What have we got so far?
   if ((cmd==1)); then
     # Complete list of functions
     # FIXME:Generate automatically
-    COMPREPLY=($(compgen -W "add addto append archive command del depri do
+    COMPREPLY=$(compgen -W "add addto append archive command del depri do
     help list listall listcon listfile listpri listproj move prepend pri replace
-    report" -- "${word}"));
+    report" -- "${word}");
   else
     # Complete projects and contexts
-    COMPREPLY=($(compgen -W "$(todo lsprj) $(todo lsc)" -- "${word}"));
+    COMPREPLY=$(compgen -W "$(todo lsprj) $(todo lsc)" -- "${word}");
 
     # No match, try to turn text into an item number
     if [ -z "$COMPREPLY" ]; then
       IFS=$'\n' # Split on carriage return only
       # FIXME:A more "raw" todo ls would be better here
-      COMPREPLY=($(todo -p ls | grep "${word}"))
+      COMPREPLY=$(todo -p ls | grep "${word}")
       unset IFS; # Restore default value
 
       if ((${#COMPREPLY[@]}==1)); then
         # Only one project matched, so replace text with item number
-        local -a item=(${COMPREPLY[0]});
+        local -a item=${COMPREPLY[0]};
         COMPREPLY=${item[0]};
       fi
     fi
