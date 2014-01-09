@@ -290,6 +290,9 @@ def handle_incoming_unsorted(mail):
   # deliver "I will teach you to be rich" emails to same folder as IWTYTBR RSS feed
   elif mail["sender"].matches(r'mailer@infusionmail.com'):
     mail.move(".feeds.misc")
+  # deliver RJC roster email to roster processing
+  elif mail['from'].matches('webmaster@raleighjaycees.org') and mail['subject'].matches('Requested file'):
+    mail.xfilter([os.path.expanduser("~/.maildirproc/bin/jayceeRoster")], consume=True)
   else:
     name = extract_list_name(mail)
     if name in list_mapping.keys():
