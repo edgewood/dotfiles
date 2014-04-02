@@ -33,6 +33,16 @@ endif
 " Mutt rc files in ~/.mutt/* instead of ~/.muttrc
 au BufNewFile,BufRead */.mutt{ng,}/*   :setf muttrc
 
+" Use UTF-8 characters for listchars
+" Konstantinos Pachnis <kpachnis@bugeffect.com> via
+" https://groups.google.com/d/msg/vim_use/DAHKXk6dYlU/sh4mtn-EhaQJ
+if has('multi_byte') && &enc ==# 'utf-8'
+  set listchars=tab:▸\ ,extends:❯,precedes:❮,trail:·,nbsp:±
+  let &showbreak = '↪'
+else
+  set listchars=tab:>\ ,extends:>,precedes:<,trail:.,nbsp:.
+endif
+
 "===================================================================
 " THE NECESSARY STUFF"
 " THe three lines below are necessary for VimOrganizer to work right
