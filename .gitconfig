@@ -1,3 +1,5 @@
 [user]
 	name = Ed Blackman
 	email = ed@edgewood.to
+[merge]
+	tool = vimdiff
