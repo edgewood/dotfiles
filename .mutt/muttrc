@@ -23,6 +23,9 @@ set mh_purge=yes
 set wrap=-1
 # Show different date/time formats in index based on message age
 set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
+# persistant prompt history of commands, files, patterns...
+set history_file="/home/edgewood/.cache/mutt/history"
+set save_history=1000
 
 mailboxes =mail =postmaster
 
