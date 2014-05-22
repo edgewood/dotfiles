@@ -2,11 +2,11 @@
 #
 
 #                         :
-#                         |
-#                         V
-#                      getmail
-#                         |   (auto
-# (spam training)         V  training) (ham training) 
+# /dev/null               |
+#     ^     (killfile)    V
+#      '-----------.   getmail
+#                  |      |   (auto
+# (spam training)   \     V  training) (ham training) 
 #  incoming.spam  incoming.unknown    incoming.ham
 #      \                 /|\                 /
 #       \          spam / | \ ham           /
@@ -44,9 +44,9 @@
 # moved to mail.spam.
 #
 # incoming.unknown: This is the main entrance; getmail delivers mail
-# here. Messages that bogofilter thinks are spam are registered as
-# spam and moved to mail.spam. Other messages are registered as ham
-# and moved to incoming.unsorted.
+# here. Messages on the killfile list are dropped.  Messages that bogofilter
+# thinks are spam are registered as spam and moved to mail.spam. Other messages
+# are registered as ham and moved to incoming.unsorted.
 #
 # incoming.unsorted: Messages are moved, copied and/or forwarded to
 # suitable places. Messages can be moved here manually by a mail
@@ -55,10 +55,12 @@
 
 import datetime
 import email
+import email.utils
 import os
 import pytz
 import re
 import subprocess
+import sqlitedict
 
 # constants
 bogofilter="/usr/bin/bogofilter"
@@ -293,6 +295,11 @@ def handle_incoming_unsorted(mail):
   # deliver RJC roster email to roster processing
   elif mail['from'].matches('webmaster@raleighjaycees.org') and mail['subject'].matches('Requested file'):
     mail.xfilter([os.path.expanduser("~/.maildirproc/bin/jayceeRoster")], consume=True)
+    mail.delete()	# shouldn't be necessary for consume=True
+  elif email.utils.parseaddr(str(mail["from"]))[1] in persist['killfile']:
+    processor.log("==> {0} found in killfile: ".format(mail["from"]))
+    mail.move(".daemon.devnull")
+    #mail.delete()
   else:
     name = extract_list_name(mail)
     if name in list_mapping.keys():
@@ -309,6 +316,17 @@ def handle_incoming_unsorted(mail):
 ######################################################################
 processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
+
+# options dictionary persisted in sqlite
+persist = sqlitedict.SqliteDict(os.path.expanduser("~/.maildirproc/options.db"), 
+  tablename='maildirproc', autocommit=True)
+
+try:
+  persist['killfile']
+except KeyError:
+  processor.log('!!! setting up killfile')
+  persist['killfile'] = ['francesco.capochecchio@mail.com']
+  #persist['killfile'] = []
 
 # lists that should go somewhere other than just maildir_base
 # 
