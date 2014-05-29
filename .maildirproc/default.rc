@@ -60,7 +60,6 @@ import os
 import pytz
 import re
 import subprocess
-import sqlitedict
 import sys
 
 # constants
@@ -310,10 +309,6 @@ processor.auto_reload_rcfile = True
 
 # add import path for maildirproc specific code
 sys.path += os.path.expanduser("~/.maildirproc/lib")
-
-# options dictionary persisted in sqlite
-persist = sqlitedict.SqliteDict(os.path.expanduser("~/.maildirproc/options.db"), 
-  tablename='maildirproc', autocommit=True)
 
 # lists that should go somewhere other than just maildir_base
 # 
