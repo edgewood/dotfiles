@@ -61,6 +61,7 @@ import pytz
 import re
 import subprocess
 import sqlitedict
+import sys
 
 # constants
 bogofilter="/usr/bin/bogofilter"
@@ -306,6 +307,9 @@ def handle_incoming_unsorted(mail):
 ######################################################################
 processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
+
+# add import path for maildirproc specific code
+sys.path += os.path.expanduser("~/.maildirproc/lib")
 
 # options dictionary persisted in sqlite
 persist = sqlitedict.SqliteDict(os.path.expanduser("~/.maildirproc/options.db"), 
