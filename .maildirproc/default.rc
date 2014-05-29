@@ -283,12 +283,6 @@ def extract_list_name(mail):
 def handle_incoming_unsorted(mail):
   if mail["subject"].matches(r'(Debian|Ubuntu) package updates on'):
     apt_listchanges(mail)
-  elif mail["from"].matches(r'spong@loghyr') and mail["subject"].matches(r'spong - '):
-    if mail["X-SpongFiltered"].matches(r'true'):
-      mail.move(processor.maildir_base)
-    else:
-      processor.log("... saving for further consideration")
-      mail.move(".daemon.spong")
   # deliver "I will teach you to be rich" emails to same folder as IWTYTBR RSS feed
   elif mail["sender"].matches(r'mailer@infusionmail.com'):
     mail.move(".feeds.misc")
