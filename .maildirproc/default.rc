@@ -293,7 +293,7 @@ def handle_incoming_unsorted(mail):
   else:
     name = extract_list_name(mail)
     if name in list_mapping.keys():
-      for mailbox in list_mapping[name]:
+      for mailbox in re.split(r'\s*,\s*', list_mapping[name]):
         mail.copy(mailbox)
       # move to .lists.X, where X is the first dot delimited word
       list_shortname = ".lists." + re.split(r'\.', name)[0]
@@ -313,27 +313,28 @@ persist = sqlitedict.SqliteDict(os.path.expanduser("~/.maildirproc/options.db"),
 
 # lists that should go somewhere other than just maildir_base
 # 
-# Mails to any list in the mapping are copied to each of the mailboxes
-# listed, AND to ".lists.X" where X is the first '.' delimited word in the name.
+# Mails to any list in the mapping are copied to each of the comma-delimited
+# mailboxes listed, AND to ".lists.X" where X is the first '.' delimited word
+# in the name.
 #
 # List mails to listnames NOT in the mapping just go to maildir_base
 list_mapping = {
-    "raljcProjects.googlegroups.com": [ processor.maildir_base ],
-    "raljcbroadcast.googlegroups.com": [ processor.maildir_base ],
-    "raljcProjects.yahoogroups.com": [ processor.maildir_base ],
-    "raljcbroadcast.yahoogroups.com": [ processor.maildir_base ],
-    "hobynccommittee.googlegroups.com": [ processor.maildir_base ],
-    "bogofilter.bogofilter.org": [ ".lists.inbox" ],
-    "duplicity-talk.nongnu.org": [ ".lists.inbox" ],
-    "EyeFiHacking.yahoogroups.com": [ ".lists.inbox" ],
-    "git-users.googlegroups.com": [ ".lists.inbox" ],
-    "mutt-users.mutt.org": [ ".lists.inbox" ],
-    "procmail.lists.RWTH-Aachen.de": [ ".lists.inbox" ],
-    "remind-fans.lists.roaringpenguin.com": [ ".lists.inbox" ],
-    "screen-users.gnu.org": [ ".lists.inbox" ],
-    "trilug.trilug.org": [ ".lists.inbox" ],
-    "todotxt.yahoogroups.com": [ ".lists.inbox" ],
-    "vim_use.googlegroups.com": [ ".lists.inbox" ],
+    "raljcProjects.googlegroups.com": processor.maildir_base,
+    "raljcbroadcast.googlegroups.com": processor.maildir_base,
+    "raljcProjects.yahoogroups.com": processor.maildir_base,
+    "raljcbroadcast.yahoogroups.com": processor.maildir_base,
+    "hobynccommittee.googlegroups.com": processor.maildir_base,
+    "bogofilter.bogofilter.org": ".lists.inbox",
+    "duplicity-talk.nongnu.org": ".lists.inbox",
+    "EyeFiHacking.yahoogroups.com": ".lists.inbox",
+    "git-users.googlegroups.com": ".lists.inbox",
+    "mutt-users.mutt.org": ".lists.inbox",
+    "procmail.lists.RWTH-Aachen.de": ".lists.inbox",
+    "remind-fans.lists.roaringpenguin.com": ".lists.inbox",
+    "screen-users.gnu.org": ".lists.inbox",
+    "trilug.trilug.org": ".lists.inbox",
+    "todotxt.yahoogroups.com": ".lists.inbox",
+    "vim_use.googlegroups.com": ".lists.inbox",
     }
 
 handle_mapping = {
