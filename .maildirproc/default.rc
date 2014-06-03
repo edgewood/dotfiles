@@ -288,8 +288,8 @@ def handle_incoming_unsorted(mail):
     mail.move(".feeds.misc")
   # deliver RJC roster email to roster processing
   elif mail['from'].matches('webmaster@raleighjaycees.org') and mail['subject'].matches('Requested file'):
-    mail.xfilter([os.path.expanduser("~/.maildirproc/bin/jayceeRoster")], consume=True)
-    mail.delete()	# shouldn't be necessary for consume=True
+    mail.xfilter([maildirproc + "/bin/jayceeRoster"], consume=True)
+    mail.delete()       # shouldn't be necessary for consume=True
   else:
     name = extract_list_name(mail)
     if name in list_mapping.keys():
@@ -307,8 +307,12 @@ def handle_incoming_unsorted(mail):
 processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
 
+maildirproc = os.path.expanduser("~/.maildirproc")
+
 # add import path for maildirproc specific code
-sys.path += os.path.expanduser("~/.maildirproc/lib")
+sys.path += [ maildirproc + "/lib" ]
+
+import autodbm
 
 # lists that should go somewhere other than just maildir_base
 # 
@@ -317,24 +321,32 @@ sys.path += os.path.expanduser("~/.maildirproc/lib")
 # in the name.
 #
 # List mails to listnames NOT in the mapping just go to maildir_base
-list_mapping = {
-    "raljcProjects.googlegroups.com": processor.maildir_base,
-    "raljcbroadcast.googlegroups.com": processor.maildir_base,
-    "raljcProjects.yahoogroups.com": processor.maildir_base,
-    "raljcbroadcast.yahoogroups.com": processor.maildir_base,
-    "hobynccommittee.googlegroups.com": processor.maildir_base,
-    "bogofilter.bogofilter.org": ".lists.inbox",
-    "duplicity-talk.nongnu.org": ".lists.inbox",
-    "EyeFiHacking.yahoogroups.com": ".lists.inbox",
-    "git-users.googlegroups.com": ".lists.inbox",
-    "mutt-users.mutt.org": ".lists.inbox",
-    "procmail.lists.RWTH-Aachen.de": ".lists.inbox",
-    "remind-fans.lists.roaringpenguin.com": ".lists.inbox",
-    "screen-users.gnu.org": ".lists.inbox",
-    "trilug.trilug.org": ".lists.inbox",
-    "todotxt.yahoogroups.com": ".lists.inbox",
-    "vim_use.googlegroups.com": ".lists.inbox",
-    }
+
+db = autodbm.open( maildirproc + "/lists")
+list_mapping = {}
+for mailing_list in db.keys():
+  list_dest = db[mailing_list].decode('utf-8')
+  mailing_list = mailing_list.decode('utf-8')
+  list_mapping[mailing_list] = list_dest
+
+#list_mapping = {
+#    "raljcProjects.googlegroups.com": processor.maildir_base,
+#    "raljcbroadcast.googlegroups.com": processor.maildir_base,
+#    "raljcProjects.yahoogroups.com": processor.maildir_base,
+#    "raljcbroadcast.yahoogroups.com": processor.maildir_base,
+#    "hobynccommittee.googlegroups.com": processor.maildir_base,
+#    "bogofilter.bogofilter.org": ".lists.inbox",
+#    "duplicity-talk.nongnu.org": ".lists.inbox",
+#    "EyeFiHacking.yahoogroups.com": ".lists.inbox",
+#    "git-users.googlegroups.com": ".lists.inbox",
+#    "mutt-users.mutt.org": ".lists.inbox",
+#    "procmail.lists.RWTH-Aachen.de": ".lists.inbox",
+#    "remind-fans.lists.roaringpenguin.com": ".lists.inbox",
+#    "screen-users.gnu.org": ".lists.inbox",
+#    "trilug.trilug.org": ".lists.inbox",
+#    "todotxt.yahoogroups.com": ".lists.inbox",
+#    "vim_use.googlegroups.com": ".lists.inbox",
+#    }
 
 handle_mapping = {
     ".incoming.ham": handle_incoming_ham,
