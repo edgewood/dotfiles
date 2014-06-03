@@ -62,6 +62,14 @@ import re
 import subprocess
 import sys
 
+maildirproc = os.path.expanduser("~/.maildirproc")
+
+# add import path for maildirproc specific code
+sys.path += [ maildirproc + "/lib" ]
+
+import autodbm
+from listname import extract_list_name, maildir_folder_name
+
 # constants
 bogofilter="/usr/bin/bogofilter"
 formail="/usr/bin/reformail"
@@ -245,37 +253,6 @@ def apt_listchanges(mail):
   else:
     mail.move(processor.maildir_base)
 
-# extract the listname from headers
-def extract_list_name(mail):
-  id = str(mail["list-id"])
-  post = str(mail["list-post"])
-
-  # if list name can't be pulled RFC-2369 and RFC-2919 specified headers, return empty string
-  name = ""
-
-  # Look in List-Id first, as it's more regular
-  if id != "":
-    # eg, 'blah users list <blah.example.com>'
-    search = re.search(r'<([^>]+)>', id, re.IGNORECASE)
-    if search:
-      name = search.group(1)
-    else:
-      processor.log_error("!!! Couldn't extract listname from " + id)
-      
-  if name == "" and post != "":
-    # eg, '<http://example.com/group/blah/post?hl=en_US>, <mailto:blah@example.com>'
-    search = re.search(r'<mailto:([^>]+)>', post, re.IGNORECASE)
-    if search:
-      post_email = search.group(1)
-      name = re.sub(r'@', r'.', post_email)
-    else:
-      processor.log_error("!!! Couldn't extract listname from " + post)
-
-  # listname_id.rc for procmail looks for other headers from before the RFCs as
-  # a fallback, but for now just give up
-  return name
-
-
 ######################################################################
 # Sorting
 ######################################################################
@@ -291,14 +268,17 @@ def handle_incoming_unsorted(mail):
     mail.xfilter([maildirproc + "/bin/jayceeRoster"], consume=True)
     mail.delete()       # shouldn't be necessary for consume=True
   else:
-    name = extract_list_name(mail)
+    (name, error) = extract_list_name(str(mail["list-id"]), str(mail["list-post"]))
     if name in list_mapping.keys():
       for mailbox in re.split(r'\s*,\s*', list_mapping[name]):
         mail.copy(mailbox)
       # move to .lists.X, where X is the first dot delimited word
-      list_shortname = ".lists." + re.split(r'\.', name)[0]
+      list_shortname = maildir_folder_name(name)
       mail.move(list_shortname)
     else:
+      if error is not None:
+        processor.log_error(error)
+        
       mail.move(processor.maildir_base)
 
 ######################################################################
@@ -306,13 +286,6 @@ def handle_incoming_unsorted(mail):
 ######################################################################
 processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
-
-maildirproc = os.path.expanduser("~/.maildirproc")
-
-# add import path for maildirproc specific code
-sys.path += [ maildirproc + "/lib" ]
-
-import autodbm
 
 # lists that should go somewhere other than just maildir_base
 # 
