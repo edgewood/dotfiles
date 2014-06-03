@@ -1,19 +1,18 @@
+# subscribe to lists name in maildirproc configuration
+subscribe `~/.mutt/bin/subscribed_lists.py`
+
+subscribe NCJCISenate@yahoogroups.com
+
+# inactive subscriptions (kept so that they're tagged as lists in my archives)
 subscribe greenbelt@edgewood.to community@greenbelthoa.com
 subscribe ncssm@edgewood.to
 subscribe RTPLunchBunch@yahoogroups.com
 subscribe raljcbookclub@yahoogroups.com
 subscribe raljcfilmclub@yahoogroups.com RalJCHauntedHouse@yahoogroups.com
 subscribe HOBYNCAdvice@yahoogroups.com RaleighJayceeVolleyball@yahoogroups.com
-subscribe raljcbroadcast@yahoogroups.com raljcProjects@yahoogroups.com
-subscribe raljcChatter@yahoogroups.com
 subscribe NCJC-Chapter-Information@yahoogroups.com
 subscribe raljcvps@googlegroups.com raljcboard@googlegroups.com 
-subscribe mutt-users@mutt.org
-subscribe todotxt@yahoogroups.com
-subscribe HOBYNCCommittee@googlegroups.com HOBYNCAdvisoryCommittee@googlegroups.com
-subscribe vim_use@googlegroups.com
-subscribe remind-fans@lists.roaringpenguin.com
-subscribe NCJCISenate@yahoogroups.com
+subscribe HOBYNCAdvisoryCommittee@googlegroups.com
 
 # set save-to folder name to be the list name for Yahoo Groups lists
 save-hook '~h "List-Id: .*yahoogroups.com"' =%B
