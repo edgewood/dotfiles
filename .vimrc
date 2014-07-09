@@ -17,6 +17,9 @@ inoremap <c-w> <c-g>u<c-w>
 " Priority is to paths that persist across reboots.
 set directory=/var/tmp/vim-edgewood,.,/var/tmp,/tmp
 
+" remap normal mode C-l to turn off search term highlighting before refreshing
+nnoremap <silent> <c-l> :nohlsearch<CR><c-l>
+
 " turn on filetype, including indentation and plugins
 filetype on
 filetype plugin on
@@ -51,3 +54,24 @@ filetype plugin indent on
 " and then put these lines in vimrc somewhere after the line above
 au! BufRead,BufWrite,BufWritePost,BufNewFile *.org 
 au BufEnter *.org            call org#SetOrgFileType()
+
+" =================================================================
+" vim-addon-manager
+" using minimal version of SetupVAM() from e4cb198 (Feb 21 2014) of
+" https://github.com/MarcWeber/vim-addon-manager/blob/master/doc/vim-addon-manager-getting-started.txt
+" =================================================================
+let s:plugins = []
+fun! SetupVAM()
+  let c = get(g:, 'vim_addon_manager', {})
+  let g:vim_addon_manager = c
+  let c.plugin_root_dir = expand('$HOME', 1) . '/.vim/vim-addons'
+  let &rtp.=(empty(&rtp)?'':',').c.plugin_root_dir.'/vim-addon-manager'
+  " let g:vim_addon_manager = { your config here see "commented version" example and help
+  if !isdirectory(c.plugin_root_dir.'/vim-addon-manager/autoload')
+    execute '!git clone --depth=1 git://github.com/MarcWeber/vim-addon-manager '
+                \ shellescape(c.plugin_root_dir.'/vim-addon-manager', 1)
+  endif
+  call vam#ActivateAddons(s:plugins, {'auto_install' : 0})
+endfun
+call SetupVAM()
+unlet s:plugins
