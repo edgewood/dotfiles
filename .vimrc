@@ -46,9 +46,8 @@ else
   set listchars=tab:>\ ,extends:>,precedes:<,trail:.,nbsp:.
 endif
 
-"===================================================================
-" THE NECESSARY STUFF"
-" THe three lines below are necessary for VimOrganizer to work right
+" =================================================================
+" VimOrganizer
 " =================================================================
 filetype plugin indent on
 " and then put these lines in vimrc somewhere after the line above
