@@ -109,6 +109,12 @@ bind index <Down> next-entry
 bind index <Up> previous-entry
 bind pager <Up> previous-line
 
+# needed for some combination of client->screen->home system terminals
+bind index '<ESC>OD' first-entry
+bind index '<ESC>OF' last-entry
+bind pager '<ESC>OD' top
+bind pager '<ESC>OF' bottom
+
 # make replying to the list something I don't have to think about
 message-hook .                    'bind pager l list-reply; bind pager r reply'
 message-hook ~l                   'bind pager r list-reply; bind pager l reply'
