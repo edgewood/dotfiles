@@ -27,7 +27,7 @@ set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
 set history_file="/home/edgewood/.cache/mutt/history"
 set save_history=1000
 
-mailboxes =mail =postmaster
+mailboxes ! =.lists.inbox
 
 # set trash folder to default, because some configs change it
 set trash = ""
