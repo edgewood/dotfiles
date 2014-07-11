@@ -27,7 +27,8 @@ set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
 set history_file="/home/edgewood/.cache/mutt/history"
 set save_history=1000
 
-mailboxes ! =.lists.inbox
+# mutt needs username in news:// URL to force authentication
+mailboxes ! =.lists.inbox news://edgewood@news.eternal-september.org/comp.lang.python
 
 # set trash folder to default, because some configs change it
 set trash = ""
@@ -68,6 +69,11 @@ set text_flowed=yes
 set help=no
 set pgp_mime_signature_filename="signature.txt"
 unset pipe_decode
+
+# NNTP config
+set nntp_authenticators=user	# eternal-september.org only works with this
+set nntp_pass=8430840175bb
+set news_cache_dir=~/.cache/mutt
 
 # the most frequent thing I do in the file browser is search for 
 # Maildirs, so optimize mask for that case
