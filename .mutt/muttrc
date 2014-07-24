@@ -27,9 +27,6 @@ set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
 set history_file="/home/edgewood/.cache/mutt/history"
 set save_history=1000
 
-# mutt needs username in news:// URL to force authentication
-mailboxes ! =.lists.inbox news://edgewood@news.eternal-september.org/comp.lang.python
-
 # set trash folder to default, because some configs change it
 set trash = ""
 
@@ -82,6 +79,7 @@ set mask="^\."
 # set environment dependent options
 source '~/.mutt/bin/env_dependent_options.sh|'
 
+source ~/.mutt/rc/mailboxes
 source ~/.mutt/aliases
 source ~/.mutt/mailinglists
 source ~/.mutt/rc/headers
