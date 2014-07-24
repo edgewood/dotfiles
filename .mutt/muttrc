@@ -79,6 +79,9 @@ set news_cache_dir=~/.cache/mutt
 # Maildirs, so optimize mask for that case
 set mask="^\."
 
+# set environment dependent options
+source '~/.mutt/bin/env_dependent_options.sh|'
+
 source ~/.mutt/aliases
 source ~/.mutt/mailinglists
 source ~/.mutt/rc/headers
