@@ -14,8 +14,9 @@ subscribe NCJC-Chapter-Information@yahoogroups.com
 subscribe raljcvps@googlegroups.com raljcboard@googlegroups.com 
 subscribe HOBYNCAdvisoryCommittee@googlegroups.com
 
-# set save-to folder name to be the list name for Yahoo Groups lists
+# set save-to folder name to be the list name for Yahoo and Google Groups lists
 save-hook '~h "List-Id: .*yahoogroups.com"' =%B
+save-hook '~h "List-Id: .*googlegroups.com"' =%B
 
 alias scouts Scout Leaders <HeritageParkScouts@yahoogroups.com>
 alias cs Community Team <raljcCommunity@yahoogroups.com>
@@ -25,7 +26,7 @@ alias jcboard Jaycee Board <raljcboard@googlegroups.com>
 alias vps06 Jaycee VPs <2006JCVPs@yahoogroups.com>
 alias vps07 carter, jamilyn, suzie, paul
 alias vps Jaycee VPs <raljcvps@googlegroups.com> 
-alias chatter Jaycee Chatter <raljcchatter@yahoogroups.com>
-alias projects Jaycee Projects <raljcProjects@yahoogroups.com>
-alias broadcast Jaycee Broadcast <raljcbroadcast@yahoogroups.com>
+#alias chatter Jaycee Chatter <raljcchatter@yahoogroups.com>
+alias projects Jaycee Projects <raljcProjects@googlegroups.com>
+alias broadcast Jaycee Broadcast <raljcbroadcast@googlegroups.com>
 alias chapters NCJC Chapters <NCJC-Chapter-Information@yahoogroups.com>
