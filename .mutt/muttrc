@@ -118,8 +118,10 @@ bind pager <Up> previous-line
 
 # needed for some combination of client->screen->home system terminals
 bind index '<ESC>OD' first-entry
+bind index '<ESC>OH' first-entry
 bind index '<ESC>OF' last-entry
 bind pager '<ESC>OD' top
+bind pager '<ESC>OH' top
 bind pager '<ESC>OF' bottom
 
 # sidebar bindings
