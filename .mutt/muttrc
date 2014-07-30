@@ -135,6 +135,10 @@ message-hook .                    'bind pager l list-reply; bind pager r reply'
 message-hook ~l                   'bind pager r list-reply; bind pager l reply'
 message-hook "~h 'List-Id: <raljc(broadcast|Projects).yahoo'" 'bind pager l reply; bind pager r reply'
 
+# show unread messages only in newsgroups
+folder-hook .                   push '<limit>all<enter>'
+folder-hook 'news://.*'         push '<limit>(~N|~O)<enter>'
+
 macro generic \Cl ":source ~/.mutt/muttrc\n<refresh>"
 
 # save in specific boxes
