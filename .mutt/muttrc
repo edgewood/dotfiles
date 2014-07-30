@@ -30,24 +30,24 @@ set save_history=1000
 # set trash folder to default, because some configs change it
 set trash = ""
 
-set sendmail="~/.mutt/bin/muttSend"	# muttSend calls sendmail
-unset smtp_url				# some configs set it, and it overrides $sendmail
+set sendmail="~/.mutt/bin/muttSend"     # muttSend calls sendmail
+unset smtp_url                          # some configs set it, and it overrides $sendmail
 set alias_file=~/.mutt/aliases
 
 # use header cache, but not for mairix search folder, which has problems
-folder-hook .		"set header_cache=~/.cache/mutt/headers"
-folder-hook =search	"set header_cache="
+folder-hook .           "set header_cache=~/.cache/mutt/headers"
+folder-hook =search     "set header_cache="
 
 # make sure all mutt config files are in ~/.mutt, not $HOME
 set mailcap_path=~/.mutt/mailcap
 set certificate_file =~/.mutt/certificates
 
-message-hook .				"auto_view text/html"
-message-hook "~s 'Backup output'"	"auto_view text/html application/octet-stream"
+message-hook .                          "auto_view text/html"
+message-hook "~s 'Backup output'"       "auto_view text/html application/octet-stream"
 
 message-hook . "unalternative_order *; alternative_order text/plain text/html"
-message-hook "~f '@proxyvote.com'"	"unalternative_order text/plain"
-message-hook "~f '@uufr.org'"		"unalternative_order text/plain"
+message-hook "~f '@proxyvote.com'"      "unalternative_order text/plain"
+message-hook "~f '@uufr.org'"           "unalternative_order text/plain"
 
 set sort=threads
 set sort_aux=last-date-received
@@ -68,7 +68,7 @@ set pgp_mime_signature_filename="signature.txt"
 unset pipe_decode
 
 # NNTP config
-set nntp_authenticators=user	# eternal-september.org only works with this
+set nntp_authenticators=user    # eternal-september.org only works with this
 set nntp_pass=8430840175bb
 set news_cache_dir=~/.cache/mutt
 
@@ -98,9 +98,9 @@ out of office autoreply:|\
 )[ \t]*)+"
 
 # Set $strict_threads in large mailboxes (which are likely to have duplicated subjects)
-folder-hook .		set strict_threads=no
-folder-hook =sent	set strict_threads=yes
-folder-hook =.archive*	set strict_threads=yes
+folder-hook .           set strict_threads=no
+folder-hook =sent       set strict_threads=yes
+folder-hook =.archive*  set strict_threads=yes
 
 # Colors
 source ~/.mutt/rc/colors.rc
@@ -109,8 +109,8 @@ color index     default      default "~h '^X-Archive: Unsure'"
 color index     brightblue   default "~h '^X-Archive: No'"
 color index     brightred    default "~h '^X-Bogosity: (Yes|Spam|Unsure)'"
 color header    brightred    default ^Delivered-To:\ edgewood\\+default\@loghyr\.(farmgate|theblackmans)
-color header	brightred    default ^(Envelope-to|X-Bogosity):
-color header	brightwhite  default "^X-TMDA-Delivered-To:.*ed-keyword-"
+color header    brightred    default ^(Envelope-to|X-Bogosity):
+color header    brightwhite  default "^X-TMDA-Delivered-To:.*ed-keyword-"
 
 bind index <Down> next-entry
 bind index <Up> previous-entry
