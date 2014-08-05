@@ -3,3 +3,5 @@
 	email = ed@edgewood.to
 [merge]
 	tool = vimdiff
+[alias]
+	logtree = log --graph --oneline --decorate --all
