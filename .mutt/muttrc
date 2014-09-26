@@ -45,9 +45,7 @@ set certificate_file =~/.mutt/certificates
 message-hook .                          "auto_view text/html"
 message-hook "~s 'Backup output'"       "auto_view text/html application/octet-stream"
 
-message-hook . "unalternative_order *; alternative_order text/plain text/html"
-message-hook "~f '@proxyvote.com'"      "unalternative_order text/plain"
-message-hook "~f '@uufr.org'"           "unalternative_order text/plain"
+source ~/.mutt/rc/alternative_order
 
 set sort=threads
 set sort_aux=last-date-received
