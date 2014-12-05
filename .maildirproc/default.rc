@@ -295,12 +295,15 @@ processor.auto_reload_rcfile = True
 #
 # List mails to listnames NOT in the mapping just go to maildir_base
 
-db = autodbm.open( maildirproc + "/lists")
+mailing_lists_mapping = maildirproc + "/lists"
+db = autodbm.open(mailing_lists_mapping)
 list_mapping = {}
 for mailing_list in db.keys():
   list_dest = db[mailing_list].decode('utf-8')
   mailing_list = mailing_list.decode('utf-8')
   list_mapping[mailing_list] = list_dest
+
+processor.rc_data_files.append(mailing_lists_mapping)
 
 #list_mapping = {
 #    "raljcProjects.googlegroups.com": processor.maildir_base,
