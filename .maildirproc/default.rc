@@ -305,25 +305,6 @@ for mailing_list in db.keys():
 
 processor.rc_data_files.append(mailing_lists_mapping)
 
-#list_mapping = {
-#    "raljcProjects.googlegroups.com": processor.maildir_base,
-#    "raljcbroadcast.googlegroups.com": processor.maildir_base,
-#    "raljcProjects.yahoogroups.com": processor.maildir_base,
-#    "raljcbroadcast.yahoogroups.com": processor.maildir_base,
-#    "hobynccommittee.googlegroups.com": processor.maildir_base,
-#    "bogofilter.bogofilter.org": ".lists.inbox",
-#    "duplicity-talk.nongnu.org": ".lists.inbox",
-#    "EyeFiHacking.yahoogroups.com": ".lists.inbox",
-#    "git-users.googlegroups.com": ".lists.inbox",
-#    "mutt-users.mutt.org": ".lists.inbox",
-#    "procmail.lists.RWTH-Aachen.de": ".lists.inbox",
-#    "remind-fans.lists.roaringpenguin.com": ".lists.inbox",
-#    "screen-users.gnu.org": ".lists.inbox",
-#    "trilug.trilug.org": ".lists.inbox",
-#    "todotxt.yahoogroups.com": ".lists.inbox",
-#    "vim_use.googlegroups.com": ".lists.inbox",
-#    }
-
 handle_mapping = {
     ".incoming.ham": handle_incoming_ham,
     ".incoming.spam": handle_incoming_spam,
