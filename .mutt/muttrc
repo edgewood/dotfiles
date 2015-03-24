@@ -14,7 +14,8 @@ set folder="~/mail/"
 set spoolfile="~/mail/"
 set mbox_type=Maildir
 set postponed="=.drafts"
-set query_command="lbdbq '%s'"
+# Reverse sort by comment: changed http://unix.stackexchange.com/a/9358 to leave first line alone
+set query_command="lbdbq '%s'|sed '1p;2!G;h;$!d'"
 set forward_format="Fwd: %s"
 # remove ^Ms from display
 set display_filter="tr -d '\r'"
@@ -113,6 +114,10 @@ color header    brightwhite  default "^X-TMDA-Delivered-To:.*ed-keyword-"
 bind index <Down> next-entry
 bind index <Up> previous-entry
 bind pager <Up> previous-line
+
+# use query_command for To: tab completion, swap ^T to do alias expansion
+bind editor <Tab> complete-query
+bind editor ^T complete
 
 # needed for some combination of client->screen->home system terminals
 bind index '<ESC>OD' first-entry
