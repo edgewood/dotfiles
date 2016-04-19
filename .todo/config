@@ -42,4 +42,4 @@ export PRI_X=$GREEN  # color for rest of them
 
 # === DEFAULT OPTION OVERRIDES ===
 export TODOTXT_AUTO_ARCHIVE=0
-export TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-1}
+export TODOTXT_DATE_ON_ADD=1
