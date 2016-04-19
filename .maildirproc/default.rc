@@ -6,27 +6,27 @@
 #     ^                   V
 #      '-----------.   getmail
 #                  |      |   (auto
-# (spam training)   \     V  training) (ham training) 
+# (spam training)   \     V  training) (ham training)
 #  incoming.spam  incoming.unknown    incoming.ham
 #      \                 /|\                 /
 #       \          spam / | \ ham           /
 #        '-----. .-----'  |  '-----. .-----'
 #              | |        |        | |
 #              V V        |        | |
-#            mail.spam    |        \ /  (archive training) 
+#            mail.spam    |        \ /  (archive training)
 #                         V         Y
 #                  daemon.pending   |
 #                                   |
 #                                   V
 #                        incoming.archive.unknown
 #                                   |
-#       (no-archive training)       |        (archive training) 
+#       (no-archive training)       |        (archive training)
 #           incoming.archive.not    V           incoming.archive
 #                \                 /|\                 /
 #                 \    no-archive / | \ archive       /
 #                  '-----. .-----'  V  '-----. .-----'
 #                        | |  archive.unsure  Y
-#                        | |\                 | 
+#                        | |\                 |
 #                        V V '----------\     +-------archive
 #                   archive.not         V     V
 #                                     incoming.unsorted
@@ -133,7 +133,10 @@ def handle_incoming_spam(mail):
 def handle_incoming_unknown(mail):
   if should_deliver_direct(mail):
     processor.log("... Skipping spam and archive checks")
-    mail.move(processor.maildir_base)
+    if is_short_term(mail):
+      mail.move(".topic.shortterm")
+    else:
+      mail.move(processor.maildir_base)
   else:
     processor.log("... Autolearning spamicity")
     bogosity = autolearn_and_check_spam(mail)
@@ -253,6 +256,13 @@ def apt_listchanges(mail):
   else:
     mail.move(processor.maildir_base)
 
+def is_short_term(mail):
+  for header in shortterm_mapping:
+    for regex in shortterm_mapping[header]:
+      if mail[header].matches(regex):
+        return True
+  return False
+
 ######################################################################
 # Sorting
 ######################################################################
@@ -278,8 +288,12 @@ def handle_incoming_unsorted(mail):
     else:
       if error is not None:
         processor.log_error(error)
-        
-      mail.move(processor.maildir_base)
+
+      if is_short_term(mail):
+        mail.move(".topic.shortterm")
+      else:
+        mail.move(processor.maildir_base)
+
 
 ######################################################################
 # Mapping and processing
@@ -288,7 +302,7 @@ processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
 
 # lists that should go somewhere other than just maildir_base
-# 
+#
 # Mails to any list in the mapping are copied to each of the comma-delimited
 # mailboxes listed, AND to ".lists.X" where X is the first '.' delimited word
 # in the name.
@@ -302,8 +316,36 @@ for mailing_list in db.keys():
   list_dest = db[mailing_list].decode('utf-8')
   mailing_list = mailing_list.decode('utf-8')
   list_mapping[mailing_list] = list_dest
-
 processor.rc_data_files.append(mailing_lists_mapping)
+
+# Create header/regex mapping for messages to move to "short term" folder
+#
+# File has key/value pairs of regex/header (because the regex is the unique element),
+# but mapping should be header/list of regexes for that header.  So
+#
+# emaileds@newsobserver.com             from
+# updated\sher\sstatus                  subject
+# shared.a.link                         Subject
+#
+# turns into {'from': ['emaileds@newsobserver.com'],
+#             'subject': ['updated\sher\sstatus', 'shared.a.link']}
+#
+shortterm_header_mapping = maildirproc + "/shortterm_matches"
+db = autodbm.open(shortterm_header_mapping)
+shortterm_mapping = {}
+for regex in db.keys():
+  header = db[regex].decode('utf-8').lower()
+  regex = regex.decode('utf-8')
+
+  try:
+    shortterm_mapping[header].append(regex)
+  except KeyError:
+    shortterm_mapping[header] = [regex]
+
+processor.rc_data_files.append(shortterm_header_mapping)
+
+#
+#
 
 handle_mapping = {
     ".incoming.ham": handle_incoming_ham,
