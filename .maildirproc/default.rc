@@ -284,6 +284,14 @@ def handle_incoming_unsorted(mail):
   elif mail['from'].matches('webmaster@raleighjaycees.org') and mail['subject'].matches('Requested file'):
     mail.xfilter([maildirproc + "/bin/jayceeRoster"], consume=True)
     mail.delete()       # shouldn't be necessary for consume=True
+  elif mail['from'].matches('updates@tadpoles.com'):
+    mail.forward_copy(parents)
+    if mail['subject'].matches('Report'):
+      mail.move(".topic.shortterm")
+    else:
+      pic_cmd = [maildirproc + "/bin/tadpolesPicExtract"]
+      if not mail.xfilter(pic_cmd, consume=True):
+        mail.move(".topic.shortterm")
   else:
     (name, error) = extract_list_name(str(mail["list-id"]), str(mail["list-post"]))
     if name in list_mapping.keys():
@@ -308,6 +316,17 @@ def handle_incoming_unsorted(mail):
 processor.maildir_base = "~/mail"
 processor.auto_reload_rcfile = True
 
+######################################################################
+# configuration for forwarding
+######################################################################
+processor.sendmail = '/usr/sbin/sendmail'
+processor.sendmail_flags = '-oi -f ed@edgewood.to'
+
+# forwarding targets
+parents = [
+    'tblackman1@earthlink.net', 'valentineclown@earthlink.net',
+    'cjerzak@nc.rr.com', 'sjerzak@nc.rr.com',
+  ]
 # lists that should go somewhere other than just maildir_base
 #
 # Mails to any list in the mapping are copied to each of the comma-delimited
