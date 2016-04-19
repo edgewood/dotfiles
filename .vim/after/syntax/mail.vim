@@ -10,3 +10,7 @@ else
 endif
 
 hi def link lineEndWrap WrapLines
+
+" color nonbreaking space
+syntax match nbsp " " containedIn=ALL " quotes has nbsp - ^KNS
+highlight link nbsp Underlined
