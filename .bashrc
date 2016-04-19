@@ -28,10 +28,6 @@ fi
 
 if tty >/dev/null; then
   . $HOME/bin/keychainStartup
-
-  # background process startup
-  if ! ps -fC python | grep -q EyeFiServer.py; then
-    ( cd "$HOME/projects/EyeFiServer/Release 2.0"; detach python EyeFiServer.py -c edgewood.ini )
   fi
 fi
 
