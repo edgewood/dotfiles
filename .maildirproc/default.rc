@@ -215,6 +215,13 @@ def handle_incoming_noarchive(mail):
         processor.log_error("!!! Failed to learn as noarchive")
         mail.move(".daemon.sortfailed")
 
+def handle_incoming_ecommerce(mail):
+    processor.log("... Saving to .ecommerce and printing to PDF")
+    mail.copy(".ecommerce")
+    print_cmd = [maildirproc + "/bin/mailPrint"] + \
+      list("--highlight=mail -P PDF -a 1".split(' '))
+    mail.xfilter(print_cmd, consume=True)
+
 def handle_incoming_archive_unknown(mail):
     processor.log("... Autolearning archivicity")
     archivicity = autolearn_and_check_archive(mail)
@@ -355,6 +362,7 @@ handle_mapping = {
     ".incoming.archive.not": handle_incoming_noarchive,
     ".incoming.archive.unknown": handle_incoming_archive_unknown,
     ".incoming.unsorted": handle_incoming_unsorted,
+    ".incoming.ecommerce": handle_incoming_ecommerce,
     }
 processor.maildirs = handle_mapping.keys()
 

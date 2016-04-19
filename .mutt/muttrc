@@ -206,10 +206,8 @@ macro attach ,h "<enter-command>set my_wait_key=\$wait_key wait_key=yes<enter>\
 <shell-escape>echo http://loghyr.theblackmans:8000/mime/mutt.html<enter>\
 <enter-command>set wait_key=\$my_wait_key &my_wait_key<enter>" "graphical HTML view"
 
-# Print first page and save to ecommerce folder
-macro index,pager ,p "<enter-command>source ~/.mutt/rc/print-onepage.rc<enter>p\
-<save-message>=.ecommerce\n\n<enter-command>source ~/.mutt/rc/print-normal.rc<enter>" \
-"ecommerce print and save"
+# Save to incoming.ecommerce folder: daemon will print and move to .ecommerce
+macro index,pager ,p "<save-message>=.incoming.ecommerce\n\n" "ecommerce print and save"
 
 # edit labels
 macro index,pager ,l "<enter-command>set my_editor=\$editor editor=\"editlabel menu\"\n\
