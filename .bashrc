@@ -26,8 +26,17 @@ if [ "$REMOTE" = "1" ]; then
   . ~/.Xdisplay
 fi
 
+alias keychain='/usr/bin/keychain --dir $HOME/.cache/keychain'
+alias rjckey='/usr/bin/keychain --dir $HOME/.cache/keychain/rjc'
+alias ghkey='/usr/bin/keychain --dir $HOME/.cache/keychain/gh'
+
 if tty >/dev/null; then
-  . $HOME/bin/keychainStartup
+  if [ "$(pwd)" = "$HOME/projects/raleighjaycees.org" ]; then
+    alias ssh='ssh-add -l >/dev/null || ssh-add ~/.ssh/raleighjaycees; /usr/bin/ssh'
+    eval $(rjckey --noinherit --timeout 60 --quiet --nogui --eval --noask)
+  else
+    alias ssh='ssh-add -l >/dev/null || ssh-add ~/.ssh/id_ecdsa; /usr/bin/ssh'
+    eval $(keychain --timeout $((60 * 5)) --quiet --nogui --eval --noask)
   fi
 fi
 

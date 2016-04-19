@@ -5,6 +5,11 @@ if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
 
+# clear ssh-agent keys on login
+/usr/bin/keychain --dir ~/.cache/keychain --clear --quiet
+test -d ~/.cache/keychain/rjc && /usr/bin/keychain --dir ~/.cache/keychain/rjc --clear --quiet
+test -d ~/.cache/keychain/gh  && /usr/bin/keychain --dir ~/.cache/keychain/gh  --clear --quiet
+
 # Create temp directory and check ~/tmp link
 usertemp="/tmp/tmp-$USER"
 if [ ! -d "$usertemp" ]; then
