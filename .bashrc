@@ -35,15 +35,23 @@ export EDITOR=vim
 
 ## History control
 
-export HISTCONTROL=erasedups
+export HISTCONTROL=erasedups:ignorespace
 export HISTFILESIZE=50000
 export HISTSIZE=1000
 
-# use a separate file for screen windows 1 and 2
-rjchist="$HOME/projects/rjchistory.txt"
+# window-specific history
+histbase="$HOME/.cache/bash_history"
+mkdir -p "$histbase"
 
-[ "$WINDOW" = "1" -a -e "$rjchist" ] && { HISTFILE="$rjchist"; }
-[ "$WINDOW" = "2" -a -e "$rjchist" ] && { HISTFILE="$rjchist"; }
+if [ -n "$WINDOW" ]; then
+    export HISTFILE="$histbase/history.$WINDOW"
+else
+    export HISTFILE="$histbase/history"
+fi
+
+# save history immediately
+shopt -s histappend
+PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 ## Completions
 
