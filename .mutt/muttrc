@@ -136,7 +136,9 @@ bind pager '<ESC>OF' bottom
 
 # sidebar bindings
 bind index,pager "'n" sidebar-next
+macro index,pager "'N" <sidebar-next><sidebar-next><sidebar-next>
 bind index,pager "'p" sidebar-prev
+macro index,pager "'P" <sidebar-prev><sidebar-prev><sidebar-prev>
 bind index,pager "'o" sidebar-open
 macro index,pager B '<enter-command>toggle sidebar_visible<enter>'
 
