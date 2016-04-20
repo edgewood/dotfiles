@@ -20,8 +20,6 @@ set forward_format="Fwd: %s"
 # remove ^Ms from display
 set display_filter="tr -d '\r'"
 set mh_purge=yes
-# workaround mutt bug for format=flowed messages.  Bug is fixed in 1.5.22
-set wrap=-1
 # Show different date/time formats in index based on message age
 set index_format="/home/edgewood/.mutt/bin/format_date '%[%s]' '%<%s>' |"
 # persistant prompt history of commands, files, patterns...
