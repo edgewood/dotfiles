@@ -1,6 +1,7 @@
-! uxterm: -fa 'Droid Sans Mono' -fs 10 -geometry 100x25 -fg green
-UXTerm*faceName: Droid Sans Mono:size=10
+! uxterm: -fa 'Inconsolata\-dz' -fs 10 -geometry 100x25 -fg green -bg black
+UXTerm*faceName:	xft:Inconsolata:size=10
 UXTerm*foreground:	green
+UXTerm*background:	black
 UXTerm*geometry:	100x25
 ! uxterm: scroll bar
 UXTerm*saveLines:	25000
