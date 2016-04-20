@@ -1,0 +1,19 @@
+# If set to on, readline will undo all changes to history lines before
+# returning when accept-line is executed.  By default, history lines may
+# be modified and retain individual undo lists across calls to readline.
+#
+# Alternatives: alt+r, for 'undo all changes to this line'
+# alt+# for 'comment out this line and add it to my history'
+set revert-all-at-newline on
+
+# If enabled, readline does not insert characters from the completion that
+# match characters after point in the word being completed, so portions of the
+# word following the cursor are not duplicated.
+set skip-completed-text on
+
+# If set to On, a character denoting a file's type as reported by stat(2) is
+# appended to the filename when listing possible completions.
+set visible-stats on
+
+# Have ^W stop at path separators, too. Needs 'stty werase undef' to take effect.
+'\C-w': unix-filename-rubout

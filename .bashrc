@@ -42,6 +42,9 @@ fi
 
 export EDITOR=vim
 
+## Input
+stty werase undef	# allow inputrc to customize ^W
+
 ## History control
 
 export HISTCONTROL=erasedups:ignorespace
