@@ -64,7 +64,11 @@ set metoo=no
 #Linux, screen, and putty/Win all seem to support line chars now
 #set ascii_chars=yes
 set ascii_chars=no
-set text_flowed=yes
+# force quoted printable encoding if there are 8bit chars in the message, so that I
+# can put in soft line breaks that the rest of the world respects, not format=flowed
+set text_flowed=no
+set allow_8bit=no
+
 set help=no
 set pgp_mime_signature_filename="signature.txt"
 unset pipe_decode
