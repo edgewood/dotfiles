@@ -85,7 +85,11 @@ set mask="^\."
 # set environment dependent options
 source '~/.mutt/bin/env_dependent_options.sh|'
 
+# mailboxes
+unmailboxes
+mailboxes !
 source ~/.mutt/rc/mailboxes
+
 source ~/.mutt/aliases
 source ~/.mutt/mailinglists
 source ~/.mutt/rc/headers
