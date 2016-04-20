@@ -44,6 +44,11 @@ set certificate_file =~/.mutt/certificates
 message-hook .                          "auto_view text/html"
 message-hook "~s 'Backup output'"       "auto_view text/html application/octet-stream"
 
+# insert save directory for Primrose newsletter emails
+message-hook .                          "macro attach s <save-entry>"
+message-hook "~f kfaber@primroseofcary" "macro attach s <save-entry><bol>~/media/Dropbox/tmp/<eol>"
+
+
 source ~/.mutt/rc/alternative_order
 
 set sort=threads
