@@ -15,5 +15,8 @@ set skip-completed-text on
 # appended to the filename when listing possible completions.
 set visible-stats on
 
-# Have ^W stop at path separators, too. Needs 'stty werase undef' to take effect.
+# Have ^W stop at path separators in addition to white space.  Needs
+# bind-tty-special-chars off or 'stty werase undef' to take effect, and the
+# latter is undone by 'reset' and 'stty sane'.
+set bind-tty-special-chars off
 '\C-w': unix-filename-rubout
