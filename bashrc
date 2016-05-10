@@ -100,8 +100,8 @@ _mycomplete_todo()
     help list listall listcon listfile listpri listproj move prepend pri replace
     report" -- "${word}");
   else
-    # Complete projects and contexts
-    COMPREPLY=$(compgen -W "$(todo lsprj) $(todo lsc)" -- "${word}");
+    # Complete projects and contexts, removing newlines
+    COMPREPLY=$(compgen -W "$(echo $(todo lsprj) $(todo lsc))" -- "${word}");
 
     # No match, try to turn text into an item number
     if [ -z "$COMPREPLY" ]; then
