@@ -40,6 +40,24 @@ if tty >/dev/null; then
   fi
 fi
 
+git() {
+    cmd="$1"
+    case "$cmd" in
+	fetch|pull|push)
+	    # ssh-agent is running
+	    if [ -n "$SSH_AGENT_PID" ]; then
+		# ssh-agent is the GH agent, but doesn't hold GH identity
+		if grep -q "$SSH_AGENT_PID" ~/.cache/keychain/gh/loghyr-sh &&
+		  ! ssh-add -l | grep -q github; then
+		    ssh-add ~/.ssh/github
+		fi
+	    fi
+	    ;;
+	*);;
+    esac
+    /usr/bin/git "$@"
+}
+
 export EDITOR=vim
 
 ## History control
