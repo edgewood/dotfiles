@@ -35,7 +35,7 @@ if tty >/dev/null; then
     alias ssh='ssh-add -l >/dev/null || ssh-add ~/.ssh/raleighjaycees; /usr/bin/ssh'
     eval $(rjckey --noinherit --timeout 60 --quiet --nogui --eval --noask)
   else
-    alias ssh='ssh-add -l >/dev/null || ssh-add ~/.ssh/id_ecdsa; /usr/bin/ssh'
+    alias ssh='ssh-add -l >/dev/null || ssh-add; /usr/bin/ssh'
     eval $(keychain --timeout $((60 * 5)) --quiet --nogui --eval --noask)
   fi
 fi
