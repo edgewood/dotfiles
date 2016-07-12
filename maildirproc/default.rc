@@ -219,7 +219,7 @@ def handle_incoming_ecommerce(mail):
     processor.log("... Saving to .ecommerce and printing to PDF")
     mail.copy(".ecommerce")
     print_cmd = [maildirproc + "/bin/mailPrint"] + \
-      list("--highlight=mail -P PDF -a 1".split(' '))
+      list("--highlight=mail -P PDF".split(' '))
     mail.xfilter(print_cmd, consume=True)
 
 def handle_incoming_archive_unknown(mail):
