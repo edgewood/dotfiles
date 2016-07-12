@@ -20,6 +20,9 @@ alias mv='mv -i'
 alias home='cd ~; clear'
 alias bc='\bc ~/.bcrc'
 
+export LESS="--ignore-case"	# smartcase: lowercase search ignores case, uppercase doesn't
+export LESSHISTFILE=~/.cache/less.hst
+
 export RSYNC_RSH=ssh
 
 if [ "$REMOTE" = "1" ]; then
