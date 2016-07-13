@@ -50,7 +50,7 @@ git() {
 	    # ssh-agent is running
 	    if [ -n "$SSH_AGENT_PID" ]; then
 		# ssh-agent is the GH agent, but doesn't hold GH identity
-		if grep -q "$SSH_AGENT_PID" ~/.cache/keychain/gh/loghyr-sh &&
+		if grep -q "$SSH_AGENT_PID" ~/.cache/keychain/gh/${HOSTNAME}-sh &&
 		  ! ssh-add -l | grep -q github; then
 		    ssh-add ~/.ssh/github
 		fi
