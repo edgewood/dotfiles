@@ -304,11 +304,14 @@ def handle_incoming_unsorted(mail):
     mail.delete()       # shouldn't be necessary for consume=True
   elif mail['from'].matches('updates@tadpoles.com'):
     mail.forward_copy(parents)
-    if mail['subject'].matches('Report'):
+    if mail['subject'].matches('Note'):
+      mail.move(processor.maildir_base)
+    elif mail['subject'].matches('Report'):
       mail.move(".topic.shortterm")
     else:
       pic_cmd = [maildirproc + "/bin/tadpolesPicExtract"]
       if not mail.xfilter(pic_cmd, consume=True):
+        mail.copy(processor.maildir_base)
         mail.move(".topic.shortterm")
   elif mail["subject"].matches(r'\[Wordfence Alert\]'):
     if mail["subject"].matches(r'www.raleighjaycees.org Admin Login'):
