@@ -221,6 +221,7 @@ def handle_incoming_ecommerce(mail):
     print_cmd = [maildirproc + "/bin/mailPrint"] + \
       list("--highlight=mail -P PDF".split(' '))
     mail.xfilter(print_cmd, consume=True)
+    mail.delete()       # shouldn't be necessary for consume=True
 
 def handle_incoming_archive_unknown(mail):
     processor.log("... Autolearning archivicity")
