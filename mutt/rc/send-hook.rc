@@ -3,13 +3,6 @@ unhook send-hook
 
 #send-hook .			'my_hdr Message-ID:<`date +"%s"`.`(id; echo $$; date) | md5sum | cut -c 1-5`@strabo.loghyr.theblackmans>'
 
-# I stopped using TMDA for outgoing mail a month or so ago, so stop adding the header - 2011-05-18
-#
-## outgoing TMDA setup
-#send-hook .				my_hdr X-TMDA: bare=append
-#send-hook "~t .*yahoogroups.com"	my_hdr X-TMDA: bare
-#send-hook "~t .*googlegroups.com"	my_hdr X-TMDA: bare
-
 # default identity and alternates
 send-hook .				my_hdr "From: Identity_default"
 send-hook "~t vim_use@googlegroups.com" my_hdr "From: Identity_vim"
