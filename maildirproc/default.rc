@@ -326,7 +326,7 @@ processor.sendmail_flags = '-oi -f ed@edgewood.to'
 # forwarding targets
 parents = [
     'tblackman1@earthlink.net', 'valentineclown@earthlink.net',
-    'cjerzak@nc.rr.com', 'sjerzak@nc.rr.com',
+    'cjerzak@att.net', 'sjerzak@att.net',
   ]
 # lists that should go somewhere other than just maildir_base
 #
