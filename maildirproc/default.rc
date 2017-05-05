@@ -313,6 +313,13 @@ def handle_incoming_unsorted(mail):
       if not mail.xfilter(pic_cmd, consume=True):
         mail.copy(processor.maildir_base)
         mail.move(".topic.shortterm")
+  elif mail['from'].matches('chat\+ea8b5e71-ec62-4014-93c4-2558d9492a17@mail.remind.com'):
+    mail.forward_copy(parents)
+    pic_cmd = ['grep', '-q', 'rmd.me/',]
+    if not mail.xfilter(pic_cmd, consume=True):
+      mail.move(processor.maildir_base)
+    else:
+      mail.move(".topic.shortterm")
   elif mail["subject"].matches(r'\[Wordfence Alert\]'):
     if mail["subject"].matches(r'www.raleighjaycees.org Admin Login'):
       known_logins = (
