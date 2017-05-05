@@ -12,7 +12,6 @@ send-hook .				set signature="~/.mutt/sigs/default.sig"
 
 # some people can't easily read mime_forward messages
 send-hook .				set mime_forward=yes
-send-hook "~t jen"			set mime_forward=no  # for Jen
 
 # help other Jaycees to not break the rules about followups to the list by
 # unsetting followup_to for those lists
