@@ -110,12 +110,12 @@ _mycomplete_todo()
     if [ -z "$COMPREPLY" ]; then
       IFS=$'\n' # Split on carriage return only
       # FIXME:A more "raw" todo ls would be better here
-      COMPREPLY=$(todo -p ls | grep "${word}")
+      local -a reply=$(todo -p ls | grep "${word}")
       unset IFS; # Restore default value
 
-      if ((${#COMPREPLY[@]}==1)); then
+      if ((${#reply[@]}==1)); then
         # Only one project matched, so replace text with item number
-        local -a item=${COMPREPLY[0]};
+        local -a item=${reply[0]};
         COMPREPLY=${item[0]};
       fi
     fi
