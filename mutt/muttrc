@@ -209,6 +209,14 @@ macro index,pager,browser ,f "\
 <pipe-entry>~/.mutt/bin/mairixFrom<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix sender query"
 
+# pipe to todo-extract
+macro index,pager,browser ,t "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<enter-command>set my_wait_key=\$wait_key wait_key=yes<enter>\
+<pipe-entry>~/.mutt/bin/todo-extract<enter><delete-message>\
+<enter-command>set wait_key=\$my_wait_key &my_wait_key<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "todo extract"
+
 # view Office docs in text viewer
 macro attach O "<pipe-entry>muttOffice\n"
 
