@@ -46,7 +46,7 @@ message-hook "~s 'Backup output'"       "auto_view text/html application/octet-s
 
 # insert save directory for Primrose newsletter emails
 message-hook .                          "macro attach s <save-entry>"
-message-hook "~f kfaber@primroseofcary" "macro attach s <save-entry><bol>~/media/Dropbox/tmp/<eol>"
+message-hook "~f kstockman@primroseapex.com" "macro attach s <save-entry><bol>~/media/Dropbox/tmp/<eol>"
 
 
 source ~/.mutt/rc/alternative_order
@@ -64,6 +64,7 @@ set metoo=no
 #Linux, screen, and putty/Win all seem to support line chars now
 #set ascii_chars=yes
 set ascii_chars=no
+
 # force quoted printable encoding if there are 8bit chars in the message, so that I
 # can put in soft line breaks that the rest of the world respects, not format=flowed
 set text_flowed=no
