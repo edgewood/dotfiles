@@ -76,7 +76,7 @@ unset pipe_decode
 
 # NNTP config
 set nntp_authenticators=user    # eternal-september.org only works with this
-set nntp_pass=8430840175bb
+# set nntp_pass=                # password in KeePass
 set news_cache_dir=~/.cache/mutt
 
 # the most frequent thing I do in the file browser is search for 
