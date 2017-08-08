@@ -4,6 +4,9 @@
 if [ -f ~/.bashrc ]; then
 	. ~/.bashrc
 fi
+if [ -f ~/.config/gpodder/rc ]; then
+	. ~/.config/gpodder/rc
+fi
 
 # clear ssh-agent keys on login
 /usr/bin/keychain --dir ~/.cache/keychain --clear --quiet

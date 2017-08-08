@@ -1,0 +1,3 @@
+export GPODDER_DOWNLOAD_DIR=/home/edgewood/music/podcasts
+export GPODDER_HOME=/home/edgewood/.config/gpodder/
+export GPODDER_WRITE_LOGS=no
