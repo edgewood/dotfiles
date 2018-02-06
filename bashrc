@@ -20,7 +20,11 @@ alias mv='mv -i'
 alias home='cd ~; clear'
 alias bc='\bc ~/.bcrc'
 
-export LESS="--ignore-case"	# smartcase: lowercase search ignores case, uppercase doesn't
+# smartcase: lowercase search ignores case, uppercase doesn't
+# highlight search
+# interpret ANSI escapes
+# no bell
+export LESS="--ignore-case --HILITE-SEARCH --RAW-CONTROL-CHARS --QUIET"
 export LESSHISTFILE=~/.cache/less.hst
 
 export RSYNC_RSH=ssh
