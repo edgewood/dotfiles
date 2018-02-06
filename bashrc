@@ -39,12 +39,14 @@ alias ghkey='/usr/bin/keychain --dir $HOME/.cache/keychain/gh'
 
 if tty >/dev/null; then
   if [ "$(pwd)" = "$HOME/projects/raleighjaycees.org" ]; then
-    alias ssh='ssh-add -l >/dev/null || ssh-add ~/.ssh/raleighjaycees; /usr/bin/ssh'
+    ssh_add() { ssh-add -l >/dev/null || ssh-add ~/.ssh/raleighjaycees; "$@"; }
     eval $(rjckey --noinherit --timeout 60 --quiet --nogui --eval --noask)
   else
-    alias ssh='ssh-add -l >/dev/null || ssh-add; /usr/bin/ssh'
+    ssh_add() { ssh-add -l >/dev/null || ssh-add; "$@"; }
     eval $(keychain --timeout $((60 * 5)) --quiet --nogui --eval --noask)
   fi
+  alias ssh='ssh_add /usr/bin/ssh'
+  alias ansible-playbook='ssh_add /usr/bin/ansible-playbook'
 fi
 
 git() {
