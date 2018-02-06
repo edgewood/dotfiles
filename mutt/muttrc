@@ -209,6 +209,14 @@ macro index,pager,browser ,f "\
 <pipe-entry>~/.mutt/bin/mairixFrom<enter><shell-escape>screen -t mutt mutt -f =search<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "mairix sender query"
 
+# pipe to logcheck_extract
+macro index,pager,browser ,l "\
+<enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
+<enter-command>set my_wait_key=\$wait_key wait_key=no<enter>\
+<pipe-entry>~/.mutt/bin/logcheck-extract<enter><delete-message>\
+<enter-command>set wait_key=\$my_wait_key &my_wait_key<enter>\
+<enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "logcheck extract"
+
 # pipe to todo-extract
 macro index,pager,browser ,t "\
 <enter-command>set my_pipe_decode=\$pipe_decode pipe_decode=no<enter>\
@@ -229,10 +237,6 @@ macro attach ,h "<enter-command>set my_wait_key=\$wait_key wait_key=yes<enter>\
 
 # Save to incoming.ecommerce folder: daemon will print and move to .ecommerce
 macro index,pager ,p "<save-message>=.incoming.ecommerce\n\n" "ecommerce print and save"
-
-# edit labels
-macro index,pager ,l "<enter-command>set my_editor=\$editor editor=\"editlabel menu\"\n\
-<edit><sync-mailbox><enter-command>set editor=\$my_editor\n" "Edit labels"
 
 # show Received headers
 macro index,pager,browser _r "\
