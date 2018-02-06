@@ -313,7 +313,7 @@ def handle_incoming_unsorted(mail):
       if not mail.xfilter(pic_cmd, consume=True):
         mail.copy(processor.maildir_base)
         mail.move(".topic.shortterm")
-  elif mail['from'].matches('chat\+ea8b5e71-ec62-4014-93c4-2558d9492a17@mail.remind.com') or (
+  elif mail['from'].matches('Mrs\. Thompson via Remind') or (
        mail['from'].matches('bthompson@wcpss.net') and mail['subject'].matches('First Grade News')):
     mail.forward_copy(parents)
     mail.move(processor.maildir_base)
