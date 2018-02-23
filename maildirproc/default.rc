@@ -307,12 +307,12 @@ def handle_incoming_unsorted(mail):
     if mail['subject'].matches('Note'):
       mail.move(processor.maildir_base)
     elif mail['subject'].matches('Report'):
-      mail.move(".topic.shortterm")
+      mail.move(".topic.daycare")
     else:
       pic_cmd = [maildirproc + "/bin/tadpolesPicExtract"]
       if not mail.xfilter(pic_cmd, consume=True):
         mail.copy(processor.maildir_base)
-        mail.move(".topic.shortterm")
+        mail.move(".topic.daycare")
   elif mail['from'].matches('Mrs\. Thompson via Remind') or (
        mail['from'].matches('bthompson@wcpss.net') and mail['subject'].matches('First Grade News')):
     mail.forward_copy(parents)
