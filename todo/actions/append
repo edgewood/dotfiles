@@ -1,0 +1,25 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "  Customized append:"
+  echo "    append [NUMBER|'last'] \"TEXT TO APPEND\""
+  echo "    app [NUMBER|'last'] \"TEXT TO APPEND\""
+  echo "      Adds TEXT TO APPEND to the end of the todo on line NUMBER, or the last"
+  echo "      line if 'last' is used for NUMBER.  Quotes optional."
+  echo ""
+  exit
+}
+
+item="$1"
+shift
+rest="$@"
+
+if [ "$item" = "last" ]; then
+  item=$(sed -n '$=' $TODO_FILE)
+fi
+
+# call back to the main script to append
+"$TODO_FULL_SH" command append $item $rest

@@ -1,0 +1,40 @@
+#!/usr/bin/perl -w
+
+use strict;
+use lib "$ENV{'HOME'}/.todo/actions";
+require 'todotxt_helpers.pl';
+
+my $debug = 0;
+
+sub run_action {
+  my $todo = $ENV{'TODO_FILE'};
+  my $action = shift();
+  my $msg = join(' ', @_);
+
+  # remove priority token and priority when considering matches
+  $msg =~ s/^\s*(pri|p)\s+([^\s]+)\s+//;
+
+  my $found = 0;
+
+  open(TODO, "<$todo") or die "Can't read todo file $todo: $!\n";
+
+  LINE: while (defined(my $line = <TODO>)) {
+    chomp($line);
+    $found = ( $found || $line =~ m@\s*$msg\s*$@ );
+  }
+
+  if(!$found) {
+    system(($ENV{'TODO_FULL_SH'}, 'add', split(' ', $msg))) and die "Can't add $msg: $! $?\n";
+  }
+
+  close(TODO);
+}
+
+sub usage {
+  todotxt_usage("adduniq \"THING I NEED TO DO p:project \@context\"",
+    "Adds TODO ITEM to your todo.txt, but only if it doesn't already exist in the list\n");
+}
+
+todotxt_run_custom_action(\@ARGV, \&usage, \&run_action);
+
+exit 0;

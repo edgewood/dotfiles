@@ -1,0 +1,82 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    doon --on ON --comment COMMENT ITEM#[, ITEM#, ITEM#, ...]"
+  echo "      Marks task(s) on line ITEM# as done in todo.txt, as if they were done on ON."
+  echo "    ON can be YYYY-MM-DD, or something that can be changed to YYYY-MM-DD:"
+  echo "      MM[-/]DD: the next occurance of MM-DD this year or next"
+  echo "      'date string': date described by string, relative to today for relative strings"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+# requires GNU getopt
+if ! options=$(getopt --options o: --longoptions on:,comment: --name "todo doon" -- "$@"); then
+  # something went wrong, getopt will put out an error message for us
+  exit 1
+fi
+
+eval "set -- $options"
+
+# process options, which getopt shuffled to the beginning:
+#   opt opt optarg ... -- arg ...
+while [ $# -gt 0 ]; do
+  case $1 in
+    --on)
+      on_arg="$2"
+      on="$("$TODO_ACTIONS_DIR/../helpers/normalize_date" "$on_arg" "past" )"
+      [ -n "$on" ] || die "todo do: ON date '$on_arg' can't be parsed"
+      shift;;
+    --comment)
+      comment="$2"
+      shift;;
+    (--) shift; break;;
+    (-*) die "todo doon: error - unrecognized option $1";;
+    (*) break;;
+  esac
+  shift; 
+done
+
+# end with usage message if there are no args
+[ -n "$*" ] || usage
+
+now=$(date '+%Y-%m-%d')
+
+while [ $# -gt 0 ]; do
+  item="$1"
+
+  if [ -n "$on" ]; then
+    export TODOTXT_VERBOSE=0 
+  fi
+
+  # try to mark done
+  if "$TODO_FULL_SH" command 'do' "$item" ; then
+    # if marking done on a different day
+    if [ -n "$on" ]; then
+      # if item can be marked done, replace today's date with selected date
+      if sed -i.bak "$item""s/ $now/ $on/" "$TODO_FILE"; then
+	echo "$item" $( sed "$item!d" "$TODO_FILE" )
+	echo "TODO: $item marked as done on $on."
+      else
+	echo "TODO: $item marked as done, but could not change date to $on."
+      fi
+    fi
+  fi
+  if [ -n "$comment" ]; then
+    "$TODO_FULL_SH" comment "$item" "$comment"
+  fi
+
+  shift
+done

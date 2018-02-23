@@ -1,0 +1,49 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+
+def todo_usage(txt, indent=False):
+  # strip unwanted parts
+  txt = re.sub(r'^usage: ', '', txt, 1)
+
+  if indent:
+    txt = re.sub(r'^', '      ', txt, 0, re.MULTILINE)    # indent all lines
+    txt = re.sub(r'^  ', '\n', txt, 1)                    # pull first line back 2 spaces
+    txt = re.sub(r'^      $\n', '', txt, 1, re.MULTILINE) # remove first empty line (before desc)
+
+  return txt
+
+def parse_args():
+  # todo passes the action name or 'usage' as the first argument, so we need to
+  # manually pull apart sys.argv before using argparse
+  try:
+    [_, action, *argv] = sys.argv
+  except ValueError:
+    print("Not enough arguments: expected action", file=sys.stderr)
+    sys.exit(1)
+
+  parser = argparse.ArgumentParser(prog='jubilee', add_help=False, 
+      description='  Emancipation from priorities (reset all items to unprioritized)')
+
+  if action == 'usage':
+    print(todo_usage(parser.format_help(), indent=True))
+    sys.exit(0)
+  else:
+    return parser.parse_args(args=argv)
+
+
+if __name__ == '__main__':
+  args = parse_args()
+  with open(os.environ['TODO_FILE'], 'r+') as f:
+      current_items = f.read()
+      # bring the jubilee - replace priority markers with empty string
+      (changed_items, num_changes) = re.subn(r'^\([A-Z]\) ', '', current_items, flags=re.MULTILINE)
+      f.seek(0)
+      f.write(changed_items)
+      f.truncate()
+
+  print('Deprioritized %d items' % num_changes, file=sys.stderr)

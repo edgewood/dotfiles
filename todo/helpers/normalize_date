@@ -1,0 +1,51 @@
+#!/usr/bin/perl -w
+
+use strict;
+use POSIX qw(strftime);
+use Time::Local;
+
+# date might be in either the desired output format (YYYY-MM-DD), or one of
+# three formats that need to be changed to the output format, or
+# not a date at all.  Handle all those cases correctly.
+
+my $postpone_date = shift;
+my @now = localtime();
+my $today = strftime("%Y-%m-%d", @now);
+
+# RE pieces
+my $yyyy_re = '([2][0]\\d{2})';             # allow only 20xx dates
+my $mm_re = '([0]?[1-9]|[1][012])';         # leading 0 optional on input
+my $dd_re = '([0]?[1-9]|[12]\\d|[3][01])';  # leading 0 optional on input
+my $sep_re = '(?:[-\\/.])';                 # any of "-/." as separators
+
+# REs
+my $yyyymmdd_re = '^' . $yyyy_re . $sep_re . $mm_re . $sep_re . $dd_re . '$';
+my $mmdd_re = '^' . $mm_re . $sep_re . $dd_re . '$';
+
+# output date
+my $date;
+
+# YYYY-MM-DD format: ensure month and day have leading 0 if necessary
+if($postpone_date =~ m/$yyyymmdd_re/is) {
+  $date = sprintf("%d-%02d-%02d", $1, $2, $3);
+}
+# MM-DD format: figure out if next occurance of MM-DD is this year or next
+elsif($postpone_date =~ m/$mmdd_re/is) {
+  my $mm_dd = sprintf("%02d-%02d", $1, $2);
+  my $year = $now[5] + 1900;
+
+  $date = "$year-$mm_dd";
+
+  # if date is lexically less than $today, MM-DD has already passed this year
+  if($date le $today) {
+    $year++;
+    $date = "$year-$mm_dd";
+  }
+}
+# Otherwise assume it's a textual date ('next thursday', '3 days')
+# Pass to date utility for parsing.
+else {
+  chomp($date = qx(date +%Y-%m-%d -d "$postpone_date" 2>/dev/null));
+}
+
+print "$date\n";

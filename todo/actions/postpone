@@ -1,0 +1,92 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    postpone ITEM# --to TO [--pri[ority] PRI]"
+  echo "      Postpones existing ITEM# until TO [changing priority to PRI]"
+  echo "    postpone -t TO item text ..."
+  echo "      Adds a new item, postponed until TO"
+  echo "    TO can be YYYY-MM-DD, or something that can be changed to YYYY-MM-DD:"
+  echo "      MM[-/]DD: the next occurance of MM-DD this year or next"
+  echo "      'date string': date described by string, relative to today for relative strings"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+# requires GNU getopt
+if ! options=$(getopt --options t:p: --longoptions to:,pri:,priority: --name "todo postpone" -- "$@"); then
+  # something went wrong, getopt will put out an error message for us
+  exit 1
+fi
+
+eval "set -- $options"
+
+# process options, which getopt shuffled to the beginning:
+#   opt opt optarg ... -- arg ...
+while [ $# -gt 0 ]; do
+  case $1 in
+    -t|--to)
+      to_arg="$2"
+      to="$("$TODO_ACTIONS_DIR/../helpers/normalize_date" "$to_arg" )"
+      shift;;
+    -p|--pri|--priority)
+      priority="$2"
+      shift;;
+    (--) shift; break;;
+    (-*) die "todo postpone: error - unrecognized option $1";;
+    (*) break;;
+  esac
+  shift
+done
+
+# end with usage message if there are no args
+[ -n "$*" ] || usage
+
+# see if first arg is item
+item="$1"
+
+# if item is a number, get the item text, removing any existing postpone tag
+# and trailing spaces
+if [[ "$item" = +([0-9]) ]]; then
+  todo="$(sed "$item!d; s/\<t:[0-9-]\+//g; s/\s\+$//;" "$TODO_FILE")"
+fi
+
+# if no "$to" yet, see if there's a "T:<date>", and use the date if so
+if [ -z "$to" ]; then
+  if echo "$todo" | grep -q ' T:'; then
+    to=$(echo "$todo" | sed -e 's/.* T:\([0-9-]\+\).*/\1/')
+    if [ -n "$to" ]; then
+      TODOTXT_VERBOSE=0 "$TODO_FULL_SH" regex "$item" 's/ T:/ t:/'
+    fi
+  else
+    echo "No valid postpone-to date was found"
+    exit
+  fi
+fi
+[ -n "$to" ] || die "todo postpone: TO date '$to_arg' can't be parsed"
+
+# if item has text
+if [ -n "$todo" ]; then
+  # add TO marker and move existing item to postpone file
+  TODOTXT_VERBOSE=0 "$TODO_FULL_SH" regex "$item" 's/ t:[0-9-]+//g; s/\s+$/\n/'
+  TODOTXT_VERBOSE=0 "$TODO_FULL_SH" append "$item" "t:$to"
+  [ -n "$priority" ] && TODOTXT_VERBOSE=0 "$TODO_FULL_SH" pri "$item" "$priority"
+  "$TODO_FULL_SH" -f move "$item" postpone.txt
+else
+  # add new item directly to postpone file
+  [ -n "$priority" ] && priority="(${priority^^}) "
+  postpone add "${priority}""$@" "t:$to"
+fi
+
+shift

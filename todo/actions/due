@@ -1,0 +1,54 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    due NUMBER DUE_DATE"
+  echo "      Marks item on line NUMBER in todo.txt as due on DUE_DATE"
+  echo "      This will remove any existing priority or expired postponement"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+item="$1"
+shift
+due="$@"
+
+# validate item number: exists and is digit
+[ -n "$item" ] || usage
+[[ "$item" = +([0-9]) ]] || usage
+
+# validate item number: corresponds to existing item
+todo=$(sed "$item!d" "$TODO_FILE")
+[ -z "$todo" ] && die "$item:  No such todo."
+
+# convert due date if not in YYYY-MM-DD format
+[[ "$due" == 2[0-9][0-9][0-9]-[012][0-9]-[0-3][0-9] ]] || {
+  due=$(date +%F -d "$(echo $due | sed -e 's@-@/@')" 2>/dev/null)    
+
+  [ -n "$due" ] || usage
+}
+
+# if there is a priority, strip it from the item
+todo=$(echo "$todo" | sed 's/^([A-Z]) //')
+
+# remove any old postponement timestamp or due date, trim trailing whitespace
+todo=$(echo "$todo" | sed 's/ \?\bdue:[0-9-]\+\b//g');
+todo=$(echo "$todo" | sed 's/ \?\bt:[0-9-]\+\b//g; s/ \+$//');
+
+# add new due date
+todo="$todo due:$due"
+
+# replace item with updated text
+"$TODO_FULL_SH" -d /dev/null command depri "$item" >/dev/null 2>&1
+"$TODO_FULL_SH" -d /dev/null command replace "$item" "$todo"

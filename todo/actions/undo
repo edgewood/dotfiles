@@ -1,0 +1,85 @@
+#!/usr/bin/perl -w
+
+use strict;
+use File::Copy qw(move);
+
+use lib "$ENV{'HOME'}/.todo/actions";
+require 'todotxt_helpers.pl';
+
+my $debug = 0;
+
+sub run_action {
+  my $todo = $ENV{'TODO_FILE'};
+  my $tmp = $ENV{'TMP_FILE'};
+  my $action = shift();
+  my $item = shift();
+  my $op = shift();
+
+  # the regex extension takes arguments, but there are related extensions that
+  # does the same thing with fixed arguments.  Rather than copy/modify, link
+  # the files and use the action name to adjust the arguments.
+  if($action eq 'undo') {
+    $op = 's@^x \d{4}-\d\d-\d\d @@';
+  }
+
+  print "item: $item\nop: $op" if($debug);
+
+  if($item eq 'all' || $item =~ /^\d+$/) {
+    my $found = 0;
+    my $modified = 0;
+
+    open(TODO, "<$todo") or die "Can't read todo file $todo: $!\n";
+    open(TMP, ">$tmp") or die "Can't write todo temp file $tmp: $!\n";
+
+    LINE: while (<TODO>) {
+      # apply perl expression to the item if the item number matches the line number, or if 'all'
+      if($item eq 'all' || $. == $item) {
+	my $old = $_;
+
+	eval $op;
+
+	# print the old value if the modification changed anything, so the user will
+	# get feedback about whether any item was changed
+	if($old ne $_) {
+	  print STDOUT "$. $old" if($ENV{TODOTXT_VERBOSE});
+	  $modified = 1;
+	}
+
+	$found = 1;
+      }
+    }
+    continue {
+      # print (potentially modified) line to temp file
+      print TMP $_;
+    }
+
+    close(TMP);
+    close(TODO);
+
+    if($modified) {
+      my $rc = move($tmp, $todo);	# use File::Copy move to handle different filesystems
+      if(!$rc) {
+	print STDERR "Move from $tmp to $todo failed: $!\n";
+      }
+    }
+    elsif(!$found) {
+      print STDERR "No such item $item\n";
+    }
+  }
+  else {
+    print STDERR "No such item $item\n";
+  }
+}
+
+sub usage {
+  if($0 =~ /undo$/) {
+    todotxt_usage("undo", "Remove the text that marks an item as done.");
+  }
+  else {
+    todotxt_usage("regex", "Modify an item (or all items) with a regular expression.");
+  }
+}
+
+todotxt_run_custom_action(\@ARGV, \&usage, \&run_action);
+
+exit 0;

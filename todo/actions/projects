@@ -1,0 +1,41 @@
+#!/usr/bin/perl
+
+use lib "$ENV{'HOME'}/.todo/actions";
+require 'todotxt_helpers.pl';
+
+sub usage
+{
+	todotxt_usage("projects",
+		      "List all projects defined in your file.");
+}
+
+sub run_action 
+{
+	my (@ARGS) = @_;
+	my %PROJECTS = {};
+	my $TODO_FILE = todotxt_get_file_path();
+
+	open (FILE, $TODO_FILE) || die "Could not open $TODO_FILE: $!\n";
+	while (<FILE>)
+	{
+		chomp $_;
+#		if ($_ =~ m/\s+P:(\S+)\s+/)
+		if ($_ =~ m/\s+\+(\S+)\s+/)
+		{
+			$PROJECTS{$1} = 1;
+		}
+	}
+	close FILE;
+
+	foreach $proj (sort keys %PROJECTS)
+	{
+		if ($PROJECTS{$proj} == 1)
+		{
+			print $proj, "\n";
+		}
+	}
+}
+
+todotxt_run_custom_action(\@ARGV, \&usage, \&run_action);
+
+exit 0;

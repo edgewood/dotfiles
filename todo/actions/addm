@@ -1,0 +1,40 @@
+#!/bin/bash
+
+action=$1
+shift
+
+[ "$action" = "usage" ] && {
+  echo "  Customized addm:"
+  echo "    addm [-b prefix] [-e suffix] \"FIRST THING I NEED TO DO +project1 @context"
+  echo "    SECOND THING I NEED TO DO +project2 @context\""
+  echo "      Adds FIRST THING I NEED TO DO to your todo.txt on its own line and"
+  echo "      Adds SECOND THING I NEED TO DO to you todo.txt on its own line."
+  echo "      Project and context notation optional."
+  echo "      Quotes optional."
+  echo "      -b prefix adds \"prefix\" to the beginning of each line"
+  echo "      -s suffix adds \"suffix\" to the edd of each line"
+  echo ""
+  exit
+}
+
+# evaulate standardized arguments to set prefix and suffix
+prefix=''
+suffix=''
+
+while getopts ":b:e:" opt ; do
+  case "$opt" in
+    'b') prefix="$OPTARG ";;
+    'e') suffix=" $OPTARG";;
+  esac
+done
+shift $(( $OPTIND - 1 ))
+
+# apply prefix and suffix, if either are set
+if [ -n "$prefix" ] || [ -n "$suffix" ]; then
+  items=$( echo "$@" | sed -e "s/.*/$prefix&$suffix/" )
+else
+  items="$@"
+fi
+
+# call back to the main script to addm
+"$TODO_FULL_SH" command addm "$items"

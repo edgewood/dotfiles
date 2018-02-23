@@ -1,0 +1,116 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    dofollow NUMBER FOLLOWUP_DELAY"
+  echo "    dof NUMBER FOLLOWUP_DELAY"
+  echo "    repeat NUMBER FOLLOWUP_DELAY"
+  echo "      Marks item on line NUMBER as done in todo.txt, but adds a followup item, postponed"
+  echo "      until FOLLOWUP_DELAY (using standard postpone delay syntax)"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+# requires GNU getopt
+if ! options=$(getopt --options t:p: --longoptions to:,pri:,priority: --name "todo dofollow" -- "$@"); then
+  # something went wrong, getopt will put out an error message for us
+  exit 1
+fi
+
+eval "set -- $options"
+
+# process options, which getopt shuffled to the beginning:
+#   opt opt optarg ... -- arg ...
+while [ $# -gt 0 ]; do
+  case $1 in
+    -t|--to)
+      to_arg="$2"
+      to="$("$TODO_ACTIONS_DIR/../helpers/normalize_date" "$to_arg" )"
+      shift;;
+    -p|--pri|--priority)
+      priority="$2"
+      shift;;
+    (--) shift; break;;
+    (-*) die "todo dofollow: error - unrecognized option $1";;
+    (*) break;;
+  esac
+  shift
+done
+
+item="$1"
+
+if [ -z "$to" ]; then
+    delay="$2"
+else
+    delay="$to"
+fi
+
+prefix="$3"
+
+# validate item number: exists and is digit
+[ -n "$item" ] || usage
+[[ "$item" = +([0-9]) ]] || usage
+
+# validate item number: corresponds to existing item
+todo=$(sed "$item!d" "$TODO_FILE")
+[ -z "$todo" ] && die "$item:  No such todo."
+
+# validate delay: exists and is composed of digits and dash
+# repeat has default delay as part of item
+[ -n "$delay" ] || {
+  if [ "$action" = "repeat" ]; then
+    delay=$(echo "$todo" | sed 's/^.*%repeat \([0-9]\+\) \?\([A-Za-z]\)\?%.*/\1/')
+    priority=$(echo "$todo" | sed 's/^.*%repeat \([0-9]\+\) \?\([A-Za-z]\)\?%.*/\u\2/')
+
+    [ -n "$priority" ] && priority="($priority) "
+  else
+    usage
+  fi
+}
+
+# if priority not previously set, get current priority
+[ -z "$priority" ] && priority=$(echo "$todo" | sed 's/^(\([A-Z]\)) .*/\1/; t; s/.*//')
+
+# if there is a priority, strip existing priority from the item
+[ -n "$priority" ] && todo=$(echo "$todo" | sed 's/^([A-Z]) //')
+
+# strip prefix, done marker, postpone marker, comments, trailing spaces from item
+[[ "$todo" = @(x *) ]] && isdone=1
+todo=$(echo "$todo" | 
+    sed "s/^x [0-9-]\+ //; s/^$prefix//; s/ \?t:[0-9-]\+ \?/ /; s/##.*$//; s/ *$//")
+if [ "$TODOTXT_DATE_ON_ADD" = 1 ]; then
+    # strip add date (has Y2.1K problem to avoid false positives)
+    todo=$(echo "$todo" | sed "s/^20[0-9-]\+ \?/ /;")
+fi
+
+# use empty prefix when called as "repeat"
+[ "$action" = "repeat" ] && prefix=""
+
+# mark item done if not done already
+if [ "$isdone" != "1" ]; then
+  "$TODO_FULL_SH" -d /dev/null command do "$item"
+else
+  # if already marked as done, this script is likely being called from
+  # "archive", so adjust delay accordingly
+  delay=$(($delay - 1))
+fi
+
+[ -n "$priority" ] && priority="pri $priority"
+
+# remove %repeat section from done item
+[ "$action" = "repeat" ] && "$TODO_FULL_SH" regex "$item" 's/ %repeat \d+( \w)?%//'
+
+# add new item, postponed appropriately
+"$TODO_FULL_SH" -d /dev/null postpone --to "$delay" ${priority} "${prefix}$todo" ||
+  "$TODO_FULL_SH" -d /dev/null undo "$item"

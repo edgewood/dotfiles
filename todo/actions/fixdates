@@ -1,0 +1,64 @@
+#!/usr/bin/perl -w
+
+use strict;
+use File::Copy qw(move);
+use Time::ParseDate;
+use POSIX qw(strftime);
+use lib "$ENV{'HOME'}/.todo/actions";
+require 'todotxt_helpers.pl';
+
+my $debug = 0;
+my $recentLim = 5;
+
+sub run_action {
+  my $todo = $ENV{'TODO_FILE'};
+  my $tmp = $ENV{'TMP_FILE'};
+
+  my $action = shift();
+
+  my $success = 0;
+  my $taggedDateRE = qr/(\w+):(?:\[|\()(.*?)(?:\]|\))/;
+
+  open(TODO, "<$todo") or die "Can't read todo file $todo: $!\n";
+  open(TMP, ">$tmp") or die "Can't write todo temp file $tmp: $!\n";
+
+  while (<TODO>) {
+    next if(/^x /);
+    next if(/^\s*$/);
+
+    if(my($tag, $date) = /$taggedDateRE/) {
+      my($secs, $error) = parsedate($date, PREFER_FUTURE => 1);
+
+      if($error) {
+	print STDERR "$.: $error for '$tag:[$date]'\n";
+      }
+      else {
+	my $newDate = strftime('%Y-%m-%d', localtime($secs));
+
+	if($_ =~ s/$taggedDateRE/$tag:$newDate/) {
+	  print STDERR "$.: changed $tag:[$date] to $tag:$newDate\n";
+	  $success = 1;
+	}
+      }
+    }
+  }
+  continue {
+    print TMP $_;
+  }
+
+  close(TODO);
+  close(TMP);
+
+  if($success) {
+    move($tmp, $todo) || print STDERR "failed to move $tmp to $todo\n";
+  }
+}
+
+sub usage {
+  todotxt_usage("fixdates", 
+    "Changes date placeholder (eg, due:(Friday)) with the corresponding YYYY-MM-DD date");
+}
+
+todotxt_run_custom_action(\@ARGV, \&usage, \&run_action);
+
+exit 0;

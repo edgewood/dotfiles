@@ -1,0 +1,52 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    sprint [NUMBER|day]"
+  echo "      Invoked with no arguments, prints items marked with @sprint.  Invoked"
+  echo "      with item NUMBER, adds or updates @sprint with today's Julian day"
+  echo "      (eg, @sprint:032 on Feb 1).  Invoked with \"day\", prints"
+  echo "      \"@sprint:nnn\" with today's Julian day"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+item="$1"
+tag="@sprint"
+jday=$(date +%j)
+
+# If item empty
+if [ -z "$item" ]; then
+  "$TODO_FULL_SH" -d /dev/null list "$tag"
+# if item is "day", echo the tag for today
+elif [ "$item" = "day" ]; then
+  echo "$tag:$jday"
+# if item is a number, update corresponding todo
+elif [[ "$item" = +([0-9]) ]]; then
+  # validate item number: corresponds to existing item
+  todo=$(sed "$item!d" "$TODO_FILE")
+  [ -z "$todo" ] && die "$item:  No such todo."
+
+  # if there is an existing tag, strip it from the item
+  todo=$(echo "$todo" | sed "s/$tag:?[0-9]*//")
+
+  # add updated tag
+  todo="$todo $tag:$jday"
+
+  # replace item with updated text
+  "$TODO_FULL_SH" -d /dev/null command replace "$item" "$todo"
+else
+  usage
+fi
+

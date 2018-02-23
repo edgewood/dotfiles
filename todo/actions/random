@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+# inspired by http://www.quickanddirtytips.com/productivity/time-management/mastering-the-surprising-power-of-randomness
+
+import os
+import random
+import sys
+
+from argparse import ArgumentParser, ArgumentTypeError
+from string import ascii_uppercase
+from subprocess import call
+
+
+def priority(s):
+    try:
+        priority = s[0].upper()
+    except:
+        priority = None
+
+    if not priority in ascii_uppercase:
+        raise ArgumentTypeError("{0} is not a priority A-Z".format(s))
+
+    return priority
+
+class Lottery(object):
+    base = object()
+    prioritized = object()
+    highest = object()
+
+    def __init__(self, unbiased):
+        self.lotteries = {}
+        if unbiased:
+            self.lotteries[self.base] = []
+            self._choose_prioritized = self._choose_base
+            self._choose_highest = self._choose_base
+        else:
+            self.lotteries[self.base] = []
+            self.lotteries[self.prioritized] = []
+            self.lotteries[self.highest] = []
+
+    def add(self, name, i):
+        if name == self.base:
+            self.lotteries[self.base].append(i)
+        elif name == self.prioritized:
+            self.lotteries[self.base].append(i)
+            self.lotteries[self.prioritized].append(i)
+        elif name == self.highest:
+            self.lotteries[self.base].append(i)
+            self.lotteries[self.prioritized].append(i)
+            self.lotteries[self.highest].append(i)
+        else:
+            raise 'Unknown name {}'.format(name)
+
+    def choose(self):
+        base = self._choose_base()
+        pri = self._choose_prioritized()
+        high = self._choose_highest()
+
+        return random.choice([ base, pri, high ])
+
+    def _choose_base(self):
+        return random.choice(self.lotteries[self.base])
+
+    def _choose_prioritized(self):
+        return random.choice(self.lotteries[self.prioritized] or self.lotteries[self.base])
+
+    def _choose_highest(self):
+        return random.choice(self.lotteries[self.highest] or self.lotteries[self.prioritized])
+
+
+def parse_args(args):
+    description = 'Prints a random todo, by default biased towards prioritized items'
+    parser = ArgumentParser(description=description)
+    parser.add_argument('priority', metavar='PRIORITY', type=priority, default='A', nargs='?',
+        help='extra bias for the given PRIORITY (A if none given)'
+        )
+    parser.add_argument('--nobias', action='store_true', help='Print unbiased random item', )
+
+    return parser.parse_args(args)
+
+if __name__ == '__main__':
+    if(len(sys.argv) > 1 and sys.argv[1] == 'usage'):
+        args = parse_args(['--help'])
+    else:
+        args = parse_args(sys.argv[2:])
+
+    priority_prefix = '({}) '.format(args.priority)
+
+    with open(os.environ['TODO_FILE']) as f:
+        lottery = Lottery(args.nobias)
+        lines = f.readlines()
+
+        for i, line in enumerate(lines):
+            l = len(line)
+            if l > 0 and line[0:2] == 'x ':
+                # skip completed items
+                pass
+            elif line.startswith(priority_prefix):
+                lottery.add(Lottery.highest, i)
+            elif l > 3 and line[0] == '(' and line[2:4] == ') ' and line[1] in ascii_uppercase:
+                lottery.add(Lottery.prioritized, i)
+            else:
+                lottery.add(Lottery.base, i)
+
+        chosen = lottery.choose()
+
+        # create search for 'todo list' by zero padding chosen to width of highest number
+        search = '^{chosen:0{width}}'.format(chosen=chosen, width=len(str(i)))
+
+        # call todo to display chosen item
+        call([ os.environ['TODO_FULL_SH'], 'list', search ])

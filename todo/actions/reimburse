@@ -1,0 +1,64 @@
+#!/usr/bin/env python3
+
+import argparse
+import os
+import re
+import subprocess
+import sys
+
+from decimal import Decimal
+
+def todo_usage(txt, indent=False):
+  # strip unwanted parts
+  txt = re.sub(r'^usage: ', '', txt, 1)
+
+  if indent:
+    txt = re.sub(r'^', '      ', txt, 0, re.MULTILINE)    # indent all lines
+    txt = re.sub(r'^  ', '\n', txt, 1)                    # pull first line back 2 spaces
+    txt = re.sub(r'^      $\n', '', txt, 1, re.MULTILINE) # remove first empty line (before desc)
+
+  return txt
+
+def parse_args():
+  # todo passes the action name or 'usage' as the first argument, so we need to
+  # manually pull apart sys.argv before using argparse
+  try:
+    [_, action, *argv] = sys.argv
+  except ValueError:
+    print("Not enough arguments: expected action", file=sys.stderr)
+    sys.exit(1)
+
+  parser = argparse.ArgumentParser(prog='reimburse', add_help=False, 
+      description='  Add a postponed item about a reimbursement')
+
+  parser.add_argument('amount', type=Decimal, metavar='AMOUNT', help='amount of reimbursement')
+  parser.add_argument('desc', nargs='+', metavar='DESC', help='description of reimbursement')
+  parser.add_argument('-x', '--expected_date', default='now +3 weeks', 
+      help='when the reimbursement is expected (any datestring parsed by `date` accepted)')
+
+  if action == 'usage':
+    print(todo_usage(parser.format_help(), indent=True))
+    sys.exit(0)
+  else:
+    return parser.parse_args(args=argv)
+
+
+if __name__ == '__main__':
+  args = parse_args()
+  cmd = [ os.environ['TODO_FULL_SH'], 'postpone',
+      '--to', args.expected_date,
+      'confirm receipt of ${0:.2f} +reimbursement for'.format(args.amount),
+      ' '.join(args.desc),
+      '@home'
+      ]
+
+  print(cmd.__repr__())
+
+  try:
+    output = subprocess.check_output(cmd)
+    dest = sys.stdout
+  except subprocess.CalledProcessError as e:
+    output = e.output
+    dest = sys.stderr
+
+  print(output.decode('utf-8'), file=dest)

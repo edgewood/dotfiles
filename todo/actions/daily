@@ -1,0 +1,213 @@
+#!/usr/bin/perl -w
+
+use strict;
+use Date::Manip qw(Delta_Format DateCalc);
+use POSIX;
+use lib "$ENV{'HOME'}/.todo/actions";
+require 'todotxt_helpers.pl';
+
+my $debug = 0;
+my $recentLim = 5;
+
+sub run_action {
+  my $todo = $ENV{'TODO_FILE'};
+  my $action = shift();
+
+  my $today = strftime('%Y-%m-%d', localtime());
+
+  reportChanges();
+
+  my @top;
+  my %soon;
+  my (@recent, @returning);
+
+  open(TODO, "<$todo") or die "Can't read todo file $todo: $!\n";
+
+  LINE: while (<TODO>) {
+    next if(/^x /);
+    next if(/^\s*$/);
+
+    s/^(\([A-Za-z]\) |)(\d{4}-\d{2}-\d{2} ){0,2}/$1/; # strip add and completion dates
+
+    if(/\bt:(\d{4}-\d{2}-\d{2})\b/) {
+      my $postpone = $1;
+
+      next if($today lt $postpone);
+    }
+
+    if(/^\(A\)/) {
+      push @top, sprintf("%02d ", $.) . $_;
+    }
+    elsif(/due:(\d{4}-\d\d-\d\d)\b/) {
+      my $dueDate = $1;
+
+      if($dueDate) {
+        my $days;
+
+        # date could be invalid, so run in a eval so that it doesn't abort the whole script
+        eval {
+          $days = Delta_Format(DateCalc('today', $dueDate), 0, '%dh')
+        };
+
+        if($@) {
+          warn $@;
+        }
+        elsif($days < 10) {
+          push @{$soon{$days}}, sprintf("%02d ", $.) . $_;
+        }
+      }
+    }
+    elsif(/t:$today/) {
+      push @returning, sprintf("%02d ", $.) . $_;
+    }
+    else {
+      # save the last $recentLim todos that aren't already captured above
+
+      next if(/^\s*$/); # skip blank lines
+
+      push @recent, sprintf("%02d ", $.) . $_;
+
+      shift @recent if(scalar(@recent) > $recentLim);
+    }
+  }
+  close(TODO);
+
+  print join('', @top);
+  print "...\n";
+  print join('', @returning);
+  print join('', @recent);
+
+  # don't automatically adjust priority above max
+  my $max_pri = 'E';
+  my @priorities = map { $_ lt $max_pri ? $max_pri : $_ } 'A' .. 'Z';
+
+  foreach my $days (sort { $a <=> $b } keys(%soon)) {
+    print "\nDue in $days days\n";
+
+    # 0-2 days or overdue -> C, 3 days -> D, 4 days -> E, etc
+    my $priority = ($days >= 0) ? $priorities[$days] : $priorities[0];
+
+    foreach my $item (@{$soon{$days}}) {
+      my ($currPri) = $item =~ m/^\d+ \(([A-Z])\) /i;
+
+      # only adjust priority if there's no current priority, or new priority is
+      # higher than current.  Note that ord *increases* for decreasing priority
+      # ( ord('C') > ord('B') ), so the direction of the comparision is reversed.
+      if(!$currPri || ord($priority) < ord(uc($currPri))) {
+        # adjust priority displayed to the same priority it will be changed to
+        $item =~ s/^(\d+ )\([A-Z]\) /$1 \($priority\) /i;
+
+        my($itemNo) = split(/ /, $item);
+        system(('env', 'TODOTXT_VERBOSE=0', $ENV{'TODO_FULL_SH'}, 'pri', $itemNo, $priority));
+      }
+
+      print $item;
+    }
+  }
+}
+
+sub reportChanges {
+  my $todo = $ENV{'TODO_FILE'};
+  my $todoDir = $ENV{'TODO_DIR'};
+  my ($todoFile) = $todo =~ m@/([^/]*)$@;
+
+  my $today = strftime('%Y-%m-%d', localtime());
+  my $yesterday = strftime("%Y-%m-%d", localtime(time() - 24*60*60));
+
+  my $todoYest = "$todoDir/$todoFile.$yesterday";
+  my $todoToday = "$todoDir/$todoFile.$today";
+
+  # strip priorities off today's file
+  my $pid = open(CHILD, '|-');
+  die "Can't fork: $!\n" if !defined($pid);
+  
+  if($pid) {
+    # parent: write to CHILD
+    open(my $todofh, '<', $todo) or die "Can't read todo file $todo: $!\n";
+
+    while(defined(my $line = <$todofh>)) {
+      print CHILD $line;
+    }
+
+    close($todofh);
+    close(CHILD);
+    waitpid $pid, 0;
+  }
+  else {
+    # child: CHILD in parent is STDIN
+    open(STDOUT, '>', $todoToday) or die "Can't write todo file $todoToday: $!\n";
+    exec("$ENV{'TODO_ACTIONS_DIR'}/../bin/stripPriorities");
+  }
+
+  # diff with yesterday's (already stripped) file.
+  if(-e "$todoYest") {
+    local $SIG{PIPE} = 'IGNORE';
+    # pipe to diff, but ignore non-zero rc (if diff finds differences)
+    open(my $diff, "diff -uw '$todoYest' '$todoToday'; true|") || die "can't fork diff: $!";
+
+    print "Added yesterday:\n";
+    # Print lines that are listed as added by 'diff', stripping off the leading
+    # '+' in the diff output.  Also skip completed items, as they're listed below.
+    while(<$diff>) {
+      if(s/^\+([^+x])/$1/) {
+        next if(/^\s*$/); # skip added blank lines
+
+	s/^(20\d{2}-\d{2}-\d{2} )?//;	# strip add dates
+        print $_;
+      }
+    }
+    print "\n";
+    close($diff) || die "can't close diff: $! $?";
+    unlink($todoYest);
+  }
+
+  # print items completed yesterday
+  my $done = $ENV{'DONE_FILE'};
+
+  print "Completed yesterday:\n";
+  open(my $donefh, '<', $done) or die "Can't read done file $done: $!\n";
+  
+  while(<$donefh>) {
+    if(s/^x $yesterday //) {
+      s/^(20\d{2}-\d{2}-\d{2} )?//;	# strip add dates
+      print $_;
+    }
+  }
+
+  close($donefh);
+  print "\n";
+
+  # print number of items in alternate files
+  foreach my $alt_file (("$todoDir/tickler.txt", "$todoDir/postpone.txt")) {
+    altFileCount($alt_file);
+  }
+}
+
+sub altFileCount() {
+  my $alt_file = shift;
+
+  if(-e $alt_file) {
+    open(my $alt_fh, '<', $alt_file) or die "Can't read alt file $alt_file: $!\n";
+
+    my $count = 0;
+    while(<$alt_fh>) {
+      next if(/^\s*$/);
+      $count++;
+    }
+
+    close($alt_fh);
+
+    print "$count items in $alt_file\n\n";
+  }
+}
+
+sub usage {
+  todotxt_usage("daily", "Print out the top priority and most recently added items");
+}
+
+todotxt_run_custom_action(\@ARGV, \&usage, \&run_action);
+
+exit 0;
+
+
+

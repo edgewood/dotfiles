@@ -1,0 +1,11 @@
+#!/bin/bash
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && exit 0
+
+export TODOTXT_SORT_COMMAND="awk -f $TODO_ACTIONS_DIR/sort.awk"
+export pre_filter_command="gawk --re-interval -f $TODO_ACTIONS_DIR/datefilter.awk"
+
+"$TODO_FULL_SH" command listfile "$@"

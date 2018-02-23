@@ -1,0 +1,44 @@
+#!/bin/bash
+
+fifo="$HOME/tmp/.todo_record"
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    record CHANNEL# CHANNEL WHEN [SHOWNAME]"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+mkfifo "$fifo"
+echo "$@" > "$fifo" &
+
+read channelnum channelname wkday day start ampm dash end < "$fifo"
+rm -f "$fifo"
+
+read -p "Show> " show
+
+showdate=$(date +'%m-%d %l:%M%P' -d "$wkday $day $start $ampm")
+duedate=$(date +%Y-%m-%d -d "$wkday $day - 3 days")
+
+# validate start: exists and is HH:MM format
+# Assume that other variables from first line are correct if it exists
+[ -n "$start" ] || usage
+[[ "$start" = +([0-9][0-9]:[0-9][0-9]) ]] || usage
+
+# validate show name: exists
+[ -n "$show" ] || usage
+
+# add message
+"$TODO_FULL_SH" -d /dev/null add record $show on $channelnum "($channelname)" $showdate due:$duedate
+

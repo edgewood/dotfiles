@@ -1,0 +1,45 @@
+#!/bin/bash
+
+shopt -s extglob
+
+function die() {
+  echo "$@"
+  exit 1
+}
+
+function usage() {
+  echo "    donot NUMBER [WHY]"
+  echo
+  exit
+}
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && usage
+
+item="$1"
+shift
+reason="$@"
+
+# validate item number: exists and is digit
+[ -n "$item" ] || usage
+[[ "$item" = +([0-9]) ]] || usage
+
+# validate item number: corresponds to existing item
+todo=$(sed "$item!d" "$TODO_FILE")
+[ -z "$todo" ] && die "$item:  No such todo."
+
+msg="NOT DONE"
+
+# add reason if given
+[ $# -ge 2 ] && msg="$msg ($reason)"
+
+msg="$msg: "
+
+# strip priority from the item
+todo=$(echo "$todo" | sed 's/^([A-Z]) //')
+
+# replace text and mark done
+"$TODO_FULL_SH" -d /dev/null replace "$item" "${msg}$todo" &&
+  "$TODO_FULL_SH" -d /dev/null command do "$item"

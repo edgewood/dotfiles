@@ -1,0 +1,25 @@
+#!/bin/sh
+
+PATH="$PATH":"$HOME"/bin
+
+action="$1"
+date="$2"
+
+if [ -n "$date" ]; then
+  shift 2
+  msg="$@"
+ 
+  case $( echo "$action" | tr [[:upper:]] [[:lower:]] ) in
+    "smsremind") prog=smsRemind;;
+    "remind"   ) prog=Remind;;
+  esac
+
+  "$prog" "$date" "$msg"
+else
+  if [ "$action" = "usage" ]; then
+    echo "    smsremind"
+    echo "      Create a 'remind'er that will be sent via SMS."
+  else 
+    echo "Usage: $action '<datetime>' <message>"
+  fi
+fi

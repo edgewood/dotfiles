@@ -1,0 +1,12 @@
+#!/bin/bash
+
+action="$1"
+shift
+
+[ "$action" = "usage" ] && { exit 1; }
+
+actions="$HOME/.todo/actions"
+
+export post_filter_command="gawk -f $actions/projectfilter.awk"
+
+_list "$TODO_FILE" "$@"
