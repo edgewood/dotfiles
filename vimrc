@@ -59,7 +59,7 @@ au BufEnter *.org            call org#SetOrgFileType()
 " using minimal version of SetupVAM() from e4cb198 (Feb 21 2014) of
 " https://github.com/MarcWeber/vim-addon-manager/blob/master/doc/vim-addon-manager-getting-started.txt
 " =================================================================
-let s:plugins = []
+let s:plugins = ['github:mgedmin/coverage-highlight.vim']
 fun! SetupVAM()
   let c = get(g:, 'vim_addon_manager', {})
   let g:vim_addon_manager = c
