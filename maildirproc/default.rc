@@ -3,8 +3,8 @@
 
 #                         :
 # /dev/null               |
-#     ^                   V
-#      '-----------.   getmail
+#     ^               .forward
+#      '-----------.      |
 #                  |      |   (auto
 # (spam training)   \     V  training) (ham training)
 #  incoming.spam  incoming.unknown    incoming.ham
