@@ -56,6 +56,7 @@
 import datetime
 import email
 import email.utils
+import errno
 import os
 import pytz
 import re
@@ -288,6 +289,17 @@ def in_body(mail_path, *args):
   except IOError:
     return False
 
+def mkdirs(path):
+  # Python 3.2+:
+  # os.makedirs(path, exist_ok=True)
+  try:
+    os.makedirs(path)
+  except OSError as exc:
+    if exc.errno == errno.EEXIST and os.path.isdir(path):
+      pass
+    else:
+      raise
+
 ######################################################################
 # Sorting
 ######################################################################
@@ -424,6 +436,12 @@ handle_mapping = {
     ".incoming.unsorted": handle_incoming_unsorted,
     ".incoming.ecommerce": handle_incoming_ecommerce,
     }
+
+for maildir in handle_mapping.keys():
+  if maildir.startswith("."):
+    for part in ["cur", "new", "tmp"]:
+      mkdirs(os.path.join(processor.maildir_base, maildir, part))
+
 processor.maildirs = handle_mapping.keys()
 
 for mail in processor:
