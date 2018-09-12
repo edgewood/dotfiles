@@ -315,20 +315,15 @@ def handle_incoming_unsorted(mail):
     mail.xfilter([maildirproc + "/bin/jayceeRoster"], consume=True)
     mail.copy(".archive.not")
     mail.delete()       # shouldn't be necessary for consume=True
-  elif mail['from'].matches('updates@tadpoles.com'):
-    mail.forward_copy(parents)
-    if mail['subject'].matches('Note'):
-      mail.move(processor.maildir_base)
-    elif mail['subject'].matches('Report'):
-      mail.move(".topic.daycare")
+  elif mail['from'].matches('do-not-reply@seesaw.me'):
+    pic_cmd = [maildirproc + "/bin/seesawPicExtract"]
+    if mail.xfilter(pic_cmd, consume=True) == 0:
+      mail.delete()
     else:
-      pic_cmd = [maildirproc + "/bin/tadpolesPicExtract"]
-      if not mail.xfilter(pic_cmd, consume=True):
-        mail.copy(processor.maildir_base)
-        mail.move(".topic.daycare")
-  elif mail['from'].matches('Mrs\. Thompson via Remind') or (
-       mail['from'].matches('bthompson@wcpss.net') and mail['subject'].matches('First Grade News')):
-    mail.forward_copy(parents)
+      mail.move(processor.maildir_base)
+  elif mail['from'].matches(r"(kcarnell|dgannon)@wcpss\.net"):
+    if mail["to"] == "":            # bulk send to all parents
+      mail.forward_copy(parents)
     mail.move(processor.maildir_base)
   elif mail["subject"].matches(r'\[Wordfence Alert\]'):
     if mail["subject"].matches(r'www.raleighjaycees.org Admin Login'):
