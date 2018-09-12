@@ -326,13 +326,11 @@ def handle_incoming_unsorted(mail):
       mail.forward_copy(parents)
     mail.move(processor.maildir_base)
   elif mail["subject"].matches(r'\[Wordfence Alert\]'):
-    if mail["subject"].matches(r'www.raleighjaycees.org Admin Login'):
+    if mail["subject"].matches(r'www.raleighjaycees.org (Admin Login|Password recovery attempted)'):
       known_logins = (
-        (r'user with username "MemVP"', r'User IP: 74.203.107.11'),
-        (r'user with username "Rebecca_Murdock"', r'User hostname: pat.nccourts.org'),
-        (r'user with username "Rebecca_Murdock"', r'User IP: 107.13.56.74'),
-        (r'user with username "Shira_Samaniego"', r'User IP: 174.99.20.108'),
-        (r'user with username "Shira_Samaniego"', r'User IP: 10.82.246.111'),
+        (r'user with email address: idvp@raleighjaycees.org', r'User IP: 152.39.96.254'),
+        (r'user with email address: gcallums1@gmail.com', r'User IP: 99.43.178.115'),
+        (r'user with username "President"', r'User IP: 99.43.178.115'),
       )
       for known_login in known_logins:
         if in_body(mail.path, *known_login):
