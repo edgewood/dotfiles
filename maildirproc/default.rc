@@ -313,6 +313,7 @@ def handle_incoming_unsorted(mail):
   # deliver RJC roster email to roster processing
   elif mail['from'].matches('webmaster@raleighjaycees.org') and mail['subject'].matches('Requested file'):
     mail.xfilter([maildirproc + "/bin/jayceeRoster"], consume=True)
+    mail.copy(".archive.not")
     mail.delete()       # shouldn't be necessary for consume=True
   elif mail['from'].matches('updates@tadpoles.com'):
     mail.forward_copy(parents)
