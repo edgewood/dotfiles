@@ -1,0 +1,23 @@
+Host *
+	ControlMaster yes
+	ControlPath ~/.cache/ssh_%r_%h_%p
+	ControlPersist 1m
+	ServerAliveInterval 15
+
+# https://wiki.gentoo.org/wiki/SSH_jump_host
+Host *+*
+	ProxyCommand ssh $(echo %h | sed 's/+[^+]*$//;s/\([^+%%]*\)%%\([^+]*\)$/\2 -l \1/;s/:/ -p /') exec nc -w 90 $(echo %h | sed 's/^.*+//;/:/!s/$/ %p/;s/:/ /')
+	ServerAliveInterval 30
+
+Host *.lan
+	ForwardX11 yes
+
+Host edgewood *.sas.com 
+	User edblac
+	ForwardX11 yes
+	ForwardAgent yes
+	GSSAPIAuthentication no
+
+Host edblac-dev*.sas.com
+	DynamicForward 7070
+	GatewayPorts yes
