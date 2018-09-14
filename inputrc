@@ -20,3 +20,6 @@ set visible-stats on
 # latter is undone by 'reset' and 'stty sane'.
 set bind-tty-special-chars off
 '\C-w': unix-filename-rubout
+
+# use visual bell since the speaker beep is loud and more or less binary
+set bell-style visible
