@@ -1,0 +1,37 @@
+#History lists
+
+[path_list]
+"/home/edgewood/media/Dropbox/tmp"
+"/media/ForPrinting/HPSCANS"
+"/home/edgewood/media/Dropbox/Camera Uploads"
+"/home/edgewood/Desktop"
+
+[sort_manager]
+"DropboxTmp[path]/home/edgewood/media/Dropbox/tmp"
+"DB Pic Incoming[path]/home/edgewood/media/Dropbox/Pictures/incoming"
+"Dropbox Pic Save[path]/home/edgewood/media/Dropbox/Pictures/save"
+"Dropbox Pic Bad[path]/home/edgewood/media/Dropbox/Pictures/bad"
+"Dropbox Personal[path]/home/edgewood/media/Dropbox/Pictures/personal"
+"Dropbox Pic Jaycee[path]/home/edgewood/media/Dropbox/Pictures/jaycee"
+"Dropbox Pic Personal[path]/home/edgewood/media/Dropbox/Pictures/personal"
+
+[bookmarks]
+"Home[path]/home/edgewood"
+"Desktop[path]/home/edgewood/Desktop"
+"Collections[path]/home/edgewood/.local/share/geeqie/collections"
+"Dropbox Incoming[path]/home/edgewood/media/Dropbox/Pictures/incoming"
+
+[bookmark_path]
+"/home/edgewood/media/Dropbox/tmp"
+"/home/edgewood/media/Dropbox/Pictures/incoming"
+"/home/edgewood/media/Dropbox/Pictures/personal"
+
+[move_copy]
+"/home/edgewood/media/Dropbox/Pictures/incoming"
+"/home/edgewood/media/Dropbox/Pictures/jaycee"
+"/home/edgewood/media/Dropbox/tmp"
+"/home/edgewood/media/Dropbox/Pictures/save"
+
+[print_settings]
+
+#end
