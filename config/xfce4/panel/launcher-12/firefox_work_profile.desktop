@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Firefox - work
+Comment=
+Icon=/home/edgewood/.icons/firefox-blue.png
+Exec=/home/edgewood/bin/firefox-profile work
+Path=
+Terminal=false
+StartupNotify=false
