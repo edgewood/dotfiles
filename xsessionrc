@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# lightdm (both upstream and the Debian maintainer) refuses to source the
+# system and user profiles directly so that PATH etc environment changes are
+# available in Debian GUI sessions, even though Ubuntu does.  So source them
+# here.
+
+[ -r /etc/profile ] && source /etc/profile
+[ -r ~/.profile ] && source ~/.profile
