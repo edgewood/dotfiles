@@ -22,3 +22,8 @@ UXTerm*toolBar:		true
 	~Shift  Ctrl <Key>Insert:	insert-selection(PRIMARY) \n\
 	 Shift ~Ctrl ~Meta <Btn2Up>:	insert-selection(CLIPBOARD) \n\
 	~Shift ~Ctrl ~Meta <Btn2Up>:	insert-selection(PRIMARY) \n
+! Characters selected as part of a 'word', default is A-Za-z0-9
+! The following adds ! # $ % & * + , - . / : ; = ? @ \ ^ _
+! It excludes double-quote single-quote < >  ( ) [ ] back-tick { | }
+! http://www.x.org/archive/X11R6.8.1/doc/xterm.1.html (search "int charClass")
+UXTerm*charClass:33:48,35-38:48,42-47:48,58-59:48,61:48,63-64:48,92:48:94-95:48,126:48
