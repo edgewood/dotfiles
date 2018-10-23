@@ -112,19 +112,10 @@ _mycomplete_todo()
     # Complete projects and contexts, removing newlines
     COMPREPLY=$(compgen -W "$(echo $(todo lsprj) $(todo lsc))" -- "${word}");
 
-    # No match, try to turn text into an item number
-    if [ -z "$COMPREPLY" ]; then
-      IFS=$'\n' # Split on carriage return only
-      # FIXME:A more "raw" todo ls would be better here
-      local -a reply=$(todo -p ls | grep "${word}")
-      unset IFS; # Restore default value
+    # No match, try projects and contexts from 'listall'
+    allprjcon=$(. $HOME/.todo/config; export TODO_FILE=$DONE_FILE; todo lsprj; todo lsc)
 
-      if ((${#reply[@]}==1)); then
-        # Only one project matched, so replace text with item number
-        local -a item=${reply[0]};
-        COMPREPLY=${item[0]};
-      fi
-    fi
+    COMPREPLY=$(compgen -W "$(echo $allprjcon)" -- "${word}");
   fi
 }
 
