@@ -1,0 +1,16 @@
+#!/usr/bin/env python3
+
+import re
+
+def strip_priorities(line):
+  # strip parts of a todo that can change without being "new"
+  line = re.sub(r'^\([A-Z]\) ', '', line)                 # priorities
+  line = re.sub(r'\s?(due|t):\d{4}-\d\d-\d\d', '', line)  # due or hide-til dates
+
+  return line
+
+if __name__ == '__main__':
+  import sys
+
+  for line in sys.stdin.readlines():
+    print(strip_priorities(line), end='') # readlines() doesn't remove newline

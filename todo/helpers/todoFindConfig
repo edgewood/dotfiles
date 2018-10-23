@@ -1,0 +1,10 @@
+#!/bin/sh
+
+if [ -s "$HOME/.todo/config" ]; then
+  . "$HOME/.todo/config"
+elif [ -s "$HOME/.todo.cfg" ]; then
+  . "$HOME/.todo.cfg"
+else
+  echo "Can't find todo config!"
+  exit 1
+fi
