@@ -1,8 +1,8 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Exec=/home/edgewood/bin/firefox-profile secure %u
-Icon=/home/edgewood/.icons/firefox-alt.png
+Exec=firefox-profile secure %u
+Icon=firefox-alt.png
 StartupNotify=false
 Terminal=false
 Categories=Utility;X-XFCE;X-Xfce-Toplevel;

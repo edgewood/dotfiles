@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Exec=/home/edgewood/bin/firefox-profile default %u
+Exec=firefox-profile default %u
 Icon=/opt/firefox64/browser/chrome/icons/default/default64.png
 StartupNotify=false
 Terminal=false
