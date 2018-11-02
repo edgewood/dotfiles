@@ -1,0 +1,5 @@
+# pull in en-us from system location for most maps
+include en-us
+
+# override keys
+XF86Calculator 0x0 inhibit
