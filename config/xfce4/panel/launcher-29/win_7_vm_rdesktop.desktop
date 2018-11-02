@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Win 7 VM
+Comment=17717b
+Icon=/home/edblac/.icons/win7.jpeg
+Exec=rdesktop -u edblac -k en-us -g 1152x864 -a 16 -x lan -r disk:edblac=/home/edblac/ -r clipboard:CLIPBOARD edgewood:3390
+Path=
+Terminal=false
+StartupNotify=false
