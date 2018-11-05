@@ -71,7 +71,6 @@ set text_flowed=no
 set allow_8bit=no
 
 set help=no
-set pgp_mime_signature_filename="signature.txt"
 unset pipe_decode
 
 # NNTP config
