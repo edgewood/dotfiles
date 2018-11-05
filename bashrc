@@ -105,17 +105,17 @@ _mycomplete_todo()
   if ((cmd==1)); then
     # Complete list of functions
     # FIXME:Generate automatically
-    COMPREPLY=$(compgen -W "add addto append archive command del depri do
+    COMPREPLY=($(compgen -W "add addto append archive command del depri do
     help list listall listcon listfile listpri listproj move prepend pri replace
-    report" -- "${word}");
+    report" -- "${word}"))
   else
     # Complete projects and contexts, removing newlines
-    COMPREPLY=$(compgen -W "$(echo $(todo lsprj) $(todo lsc))" -- "${word}");
+    COMPREPLY=($(compgen -W "$(echo $(todo lsprj) $(todo lsc))" -- "${word}"))
 
     # No match, try projects and contexts from 'listall'
     allprjcon=$(. $HOME/.todo/config; export TODO_FILE=$DONE_FILE; todo lsprj; todo lsc)
 
-    COMPREPLY=$(compgen -W "$(echo $allprjcon)" -- "${word}");
+    COMPREPLY=($(compgen -W "$(echo $allprjcon)" -- "${word}"))
   fi
 }
 
