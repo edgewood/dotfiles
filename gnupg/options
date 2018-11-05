@@ -78,11 +78,6 @@ keyserver pool.sks-keyservers.net
 #keyserver subkeys.pgp.net
 #keyserver search.keyserver.net
 
-# The environment variable http_proxy is only used when the
-# this option is set.
-
-keyserver-options honor-http-proxy
-
 # Added to mutt config and commented out here to avoid brackup warning messages
 ## Add my key to the list that messages are encrypted to: this allows
 ## me to read messages that are encrypted to other people.
