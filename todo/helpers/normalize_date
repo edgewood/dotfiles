@@ -45,6 +45,11 @@ elsif($postpone_date =~ m/$mmdd_re/is) {
 # Otherwise assume it's a textual date ('next thursday', '3 days')
 # Pass to date utility for parsing.
 else {
+  # if textual date is just a number, add implied " days"
+  if($postpone_date =~ /^\d+$/) {
+    $postpone_date .= " days";
+  }
+
   chomp($date = qx(date +%Y-%m-%d -d "$postpone_date" 2>/dev/null));
 }
 
