@@ -62,12 +62,12 @@ if [[ "$item" = +([0-9]) ]]; then
   todo="$(sed "$item!d; s/\<t:[0-9-]\+//g; s/\s\+$//;" "$TODO_FILE")"
 fi
 
-# if no "$to" yet, see if there's a "T:<date>", and use the date if so
+# if no "$to" yet, see if there's a "[TPp]:<date>", and use the date if so
 if [ -z "$to" ]; then
-  if echo "$todo" | grep -q ' T:'; then
-    to=$(echo "$todo" | sed -e 's/.* T:\([0-9-]\+\).*/\1/')
+  if echo "$todo" | grep -q ' [TPp]:'; then
+    to=$(echo "$todo" | sed -e 's/.* [TPp]:\([0-9-]\+\).*/\1/')
     if [ -n "$to" ]; then
-      TODOTXT_VERBOSE=0 "$TODO_FULL_SH" regex "$item" 's/ T:/ t:/'
+      TODOTXT_VERBOSE=0 "$TODO_FULL_SH" regex "$item" 's/ [TPp]:/ t:/'
     fi
   else
     echo "No valid postpone-to date was found"
