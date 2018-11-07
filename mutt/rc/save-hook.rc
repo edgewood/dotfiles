@@ -8,6 +8,7 @@ unhook save-hook
 # ecommerce messages
 save-hook "~f .*amazon.com"	+.ecommerce
 save-hook "~s 'AT&T Payment Processed for Account Ending in 4069'"	+.ecommerce
+save-hook "~s 'You sent an automatic payment to '"	+.ecommerce
 
 # override default save-hook
 save-hook "."			"+.%u"
