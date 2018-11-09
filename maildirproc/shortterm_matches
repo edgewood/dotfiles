@@ -1,0 +1,99 @@
+# Scouts
+newsletter@email.scoutingwire.org	from
+
+# Tech
+api-support@dropboxmail.com		from
+qcsummary@onebox.com			from
+^My.GoDaddy.Summary			subject
+triembed-owner@triembed.org		from
+mailman-owner@trilug.org		from
+
+# Periodicals
+emaileds@newsobserver.com		from
+news@email.newsobserver.com		from
+reply@reply.newsobserver.com		from
+service@email.newsobserver.com		from
+info@email.newsobserver.com		from
+@info.highlights.com			from
+
+# Hobbies
+\[NC.Jaycees\]				subject
+PaperBackSwap.NewsWire			subject
+# Don't want to miss 'Book Requested from You' mails
+#librarian@paperbackswap.com		from
+Thank.you.from.Escape.Artists		subject
+Latest.from.The.Bitterest.Pill.for	subject
+https://t.e2ma.net/optout/		list-unsubscribe	# HOBY mass mailings
+ebrief@ncjaycees.org			from
+mail@volunteerspot.com			from
+@its-go-time.com			from	# running
+
+# School
+@ncssm.edu				from
+
+# Ads
+reply@r.groupon.com			from
+YouDecide@mail.vresp.com		from
+noreply@freeconferencecall.com		from
+@cyclingspokenhere.com			from
+@trekbikes.com				from
+raleighroadtheatre\+yahoo.com@ccsend.net	from
+redflarekits@redflarekits.com		from
+@chick-fil-ainsiders.com		from
+@GasBuddyEmail.com			from
+@t-mobile-email.com			from
+@mail.eviteideas.com			from
+offers@info.subaru.com			from
+This.Week's.Recipes!			subject
+acmooreoffers@acmoore.com		from
+acmoore@e.e-acmoore.com			from
+apex.nc@bounceu.com			from
+advertise-noreply@support.facebook.com	from
+news@news.efax.com			from
+PizzaHut@pizzahutoffers.com		from
+
+# Household
+info@email.amica.com			from
+amicainsurance@us.confirmit.com		from
+@fairwaygreen.com			from
+leave.email-allentate.com		list-unsubscribe
+newsletter@ezlandlordforms.com		from
+@marbleskidsmuseum.org			from
+
+# Politics
+@reason.org				from
+@reason.com				from
+@ij.org					from
+@cato.org				from
+@clubforgrowth.org			from
+Greg_Lukianoff@mail.vresp.com		from	# FIRE
+admin@thefire.org			from
+
+# Banks and stocks
+id@ProxyVote.com			from
+@workplacedocs.fidelity.com		from
+@mail.fidelity.com			from
+Your.((?:Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|Jul(?:y)?|Aug(?:ust)?|Sep(?:tember)?|Sept|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)).statement.is.now.available subject
+Wells.Fargo.Online.Statement.Ready.to.View	subject
+communications@email.sharebuilder.com	from
+Coastal.e-Docs				subject
+@info9.citibank.com			from
+universalcard.com			from
+# exclude @ealerts.bankofamerica.com
+#bankofamerica.com			from
+customerservice@emcom.bankofamerica.com
+
+# Harris Teeter Express Lane
+No.Fee.Online.Shopping.with.the.purchase.of	subject
+Your.Weekly.Harris.Teeter.Express.Lane.Grocery.List	subject
+
+#Facebook
+@facebookmail.com			from
+updated.her.status			subject
+shared.a.link				subject
+has.a.birthday.today			subject
+added.a.new.photo.to.the.album		subject
+Ed,.you.have.notifications.pending	subject
+
+#Daemons
+Bogofilter.monthly.maintenance		subject
