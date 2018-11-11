@@ -1,0 +1,18 @@
+# main mailboxes
+mailboxes =.drafts
+mailboxes =.topic.shortterm
+
+# tech mailboxes
+mailboxes =.lists.inbox
+mailboxes =.feeds.tech
+mailboxes =.feeds.techfh
+mailboxes =.feeds.programming
+mailboxes =.feeds.programmingfh
+mailboxes =.feeds.programmingfh.old
+
+# lifestyle mailboxes
+mailboxes =.feeds.lifehack
+mailboxes =.feeds.news
+mailboxes =.feeds.politics
+mailboxes =.feeds.misc
+mailboxes =.feeds.jaycee
