@@ -389,7 +389,6 @@ for mailing_list in db.keys():
   list_dest = db[mailing_list].decode('utf-8')
   mailing_list = mailing_list.decode('utf-8')
   list_mapping[mailing_list] = list_dest
-processor.rc_data_files.append(mailing_lists_mapping)
 
 # Create header/regex mapping for messages to move to "short term" folder
 #
@@ -414,8 +413,6 @@ for regex in db.keys():
     shortterm_mapping[header].append(regex)
   except KeyError:
     shortterm_mapping[header] = [regex]
-
-processor.rc_data_files.append(shortterm_header_mapping)
 
 #
 #
