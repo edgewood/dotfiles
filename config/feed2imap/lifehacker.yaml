@@ -1,0 +1,9 @@
+---
+item_path: .//item/title
+items:
+  - ^Remains of the Day
+  - ^This Week's (Most Popular Posts|Top Downloads)
+  - ^All the Best Movies Coming to and Leaving Netflix
+  - "^((Today|Saturday|Sunday)'s Best Deals):"
+  # Kinja site cross promotions: they rarely fit what I'm interested in here
+  - ^(Adequate Man|Deadspin|Fittish|Jezebel|Screengrabber|Splinter|The Concourse|The Muse|The Root|The Slot|Very Smart Brothas)

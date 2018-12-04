@@ -1,0 +1,174 @@
+# Global options:
+# max-failures: maximum number of failures allowed before they are reported in
+#   normal mode (default 10). By default, failures are only visible in verbose
+#   mode. Most feeds tend to suffer from temporary failures.
+# dumpdir: (for debugging purposes) directory where all fetched feeds will be
+#   dumped.
+# debug-updated: (for debugging purposes) if true, display a lot of information
+#   about the "updated-items" algorithm.
+# include-images: download images and include them in the mail? (true/false)
+# default-email: default email address in the format foo@example.com
+# disable-ssl-verification: disable SSL certification when connecting
+#   to IMAPS accounts (true/false)
+# 
+# Per-feed options:
+# name: name of the feed (must be unique)
+# url: HTTP[S] address where the feed has to be fetched
+# target: the IMAP URI where to put emails. Should start with imap:// for IMAP,
+#   imaps:// for IMAPS and maildir:// for a path to a local maildir.
+# min-frequency: (in HOURS) is the minimum frequency with which this particular
+#   feed will be fetched
+# disable: if set to something, the feed will be ignored
+# include-images: download images and include them in the mail? (true/false)
+# always-new: feed2imap tries to use a clever algorithm to determine whether
+#   an item is new or has been updated. It doesn't work well with some web apps
+#   like mediawiki. When this flag is enabled, all items which don't match
+#   exactly a previously downloaded item are considered as new items.
+# ignore-hash: Some feeds change the content of their items all the time, so
+#   feed2imap detects that they have been updated at each run. When this flag
+#   is enabled, feed2imap ignores the content of an item when determining
+#   whether the item is already known.
+# dumpdir: (for debugging purposes) directory where all fetched feeds will be
+#   dumped.
+# Snownews/Liferea scripts support :
+#   execurl: Command to execute that will display the RSS/Atom feed on stdout
+#   filter: Command to execute which will receive the RSS/Atom feed on stdin,
+#    modify it, and output it on stdout.
+#   For more information: http://kiza.kcore.de/software/snownews/snowscripts/
+#
+#
+# If your login contains an @ character, replace it with %40. Other reserved
+# characters can be escaped in the same way (see man ascii to get their code)
+default-email: repeater@loghyr.lan
+include-images: true
+cache: /home/edgewood/.cache/feed2imap.cache
+# I mostly don't care about updated stories.  Override individual exceptions where I do,
+# or where incompetent RSS tools change GUIDs on old stories.
+ignore-hash: true
+feeds: 
+- target: maildir:///home/edgewood/mail/.feeds.jaycee
+  url: http://statusblog.webfaction.com/feed/
+  name: WebFaction Status Blog
+  ignore-hash: false
+- target: maildir:///home/edgewood/mail/.feeds.lifehack
+  url: http://lifehacker.com/rss/vip
+  name: Lifehacker
+  filter: /home/edgewood/.local/feed2imap/bin/subjectFilter lifehacker
+  include-images: false
+- target: maildir:///home/edgewood/mail/.feeds.lifehack
+  url: http://www.reddit.com/r/productivity/.rss
+  name: productivity
+  filter: /home/edgewood/.local/feed2imap/bin/subjectFilter reddit_productivity
+- target: maildir:///home/edgewood/mail/.feeds.news
+  url: https://www.newsobserver.com/?widgetName=rssfeed&widgetContentId=213166374&getXmlFeed=true
+  name: NewsObserver
+  #dumpdir: /home/edgewood/tmp
+  filter: /home/edgewood/.local/feed2imap/bin/newsobserverFullText
+- target: maildir:///home/edgewood/mail/.feeds.news
+  url: https://www.freefullrss.com/makefulltextfeed.php?url=www.wral.com%2Frs%2Frss%2F142&max=5&links=preserve&exc=1&submit=Create+Full+Text+RSS
+  #url: http://www.wral.com/rs/rss/142
+  name: WRAL.com Local News
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://apenwarr.ca/log/rss.php
+  name: apenwarr - Business is Programming
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://blog.red-bean.com/sussman/?feed=rss2
+  name: iBanjo
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  execurl: 'curl --silent --location https://coffeeonthekeyboard.com/rss/'
+  name: Coffee on the Keyboard
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://emergentchaos.com/feed
+  name: Emergent Chaos
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://feeds.feedburner.com/codinghorror
+  name: Coding Horror
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://fishbowl.pastiche.org/atom.xml
+  name: The Fishbowl
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://log.ometer.com/rss.xml
+  name: Havoc Pennington
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://push.cx/feed
+  name: Push cx
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://rdist.root.org/feed/
+  name: root labs rdist
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://steve-yegge.blogspot.com/feeds/posts/default
+  name: Stevey's Blog Rants
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://stevehanov.ca/blog/index.php?atom
+  name: Steve Hanov's Programming Blog
+  ignore-hash: false # changing GUIDs on old stories
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://www.cs.columbia.edu/~smb/blog/control/blog.xml
+  name: SMBlog -- Steve Bellovin&#39;s Blog
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://www.educatedguesswork.org/atom.xml
+  name: Educated Guesswork
+- target: maildir:///home/edgewood/mail/.feeds.programming
+  url: http://www.hilarymason.com/feed/
+  name: hilarymason.com - Hilary Mason
+- target: maildir:///home/edgewood/mail/.feeds.programmingfh
+  url: http://programming.reddit.com/.rss
+  name: programming
+  filter: /home/edgewood/.local/feed2imap/bin/subjectFilter programming
+- target: maildir:///home/edgewood/mail/.feeds.programmingfh
+  url: http://www.reddit.com/r/git/.rss
+  name: git - Reddit
+- target: maildir:///home/edgewood/mail/.feeds.tech
+  url: http://forum.chumby.com/extern.php?action=feed&fid=27&type=rss
+  name: "Status updates, testing and feedback"
+- target: maildir:///home/edgewood/mail/.feeds.tech
+  url: https://github.com/ginatrapani/todo.txt-cli/commits/master.atom
+  name: Recent Commits to todo.txt-cli:master
+- target: maildir:///home/edgewood/mail/.feeds.techfh
+  url: http://feeds2.feedburner.com/androidandme
+  name: Android and Me
+- target: maildir:///home/edgewood/mail/.feeds.techfh
+  url: http://feeds.feedburner.com/DroidLife
+  name: "droid life:  a motorola droid blog"
+- target: maildir:///home/edgewood/mail/.feeds.techfh
+  execurl: 'curl --silent https://blogs.dropbox.com/dropbox/feed/'
+  name: The Dropbox Blog
+- target: maildir:///home/edgewood/mail/.feeds.techfh
+  url: http://phandroid.com/feed/
+  name: Android Phone Fans
+- target: maildir:///home/edgewood/mail/.feeds.techfh
+  url: http://feeds.feedburner.com/TechFlash
+  name: TechFlash - Seattle's Technology News
+- target: maildir:///home/edgewood/mail/.feeds.xkcd
+  url: http://blog.xkcd.com/feed/
+  name: xkcd blog
+- target: maildir:///home/edgewood/mail/.feeds.xkcd
+  url: http://xkcd.com/rss.xml
+  name: xkcd comic
+  filter: /home/edgewood/.local/feed2imap/bin/titleTextExtract
+  ignore-hash: false
+  #dumpdir: /home/edgewood/tmp
+- target: maildir:///home/edgewood/mail/.feeds.xkcd
+  url: http://what-if.xkcd.com/feed.atom
+  name: What If?
+  dumpdir: /home/edgewood/tmp
+  filter: /home/edgewood/.local/feed2imap/bin/titleTextExtract
+# Feeds added by addfeed below this line.  Format looks different, but maps to same
+# data structure when parsed by YAML 
+- {name: 'chumbysphere forum topics: Status updates, testing and feedback', target: 'maildir:///home/edgewood/mail/.feeds.tech',
+  url: 'http://forum.chumby.com/extern.php?action=feed&fid=27&type=rss'}
+- {name: '"Ed Blackman" Google search results', target: 'maildir:///home/edgewood/mail/.lists.inbox',
+  url: 'http://www.google.com/alerts/feeds/12838380662065301487/91849907993713395'}
+- {name: 'rachelbythebay: Writing', target: 'maildir:///home/edgewood/mail/.feeds.programming',
+  url: 'http://rachelbythebay.com/w/atom.xml'}
+- {name: as days pass by, target: 'maildir:///home/edgewood/mail/.feeds.tech', url: 'http://www.kryogenix.org/days/feed'}
+- {name: Random ASCII, target: 'maildir:///home/edgewood/mail/.feeds.tech', url: 'https://randomascii.wordpress.com/feed/'}
+- {name: Blargh, target: 'maildir:///home/edgewood/mail/.feeds.tech', execurl: 'curl --silent https://blog.habets.se/rss'}
+- {name: "Assorted Nerdery", target: 'maildir:///home/edgewood/mail/.feeds.tech',
+  url: 'https://www.bostonenginerd.com/feeds/all.atom.xml'}
+- {name: Wandering Thoughts, target: 'maildir:///home/edgewood/mail/.feeds.tech',
+  url: 'https://utcc.utoronto.ca/~cks/space/blog/?atom'}
+- {name: flak, target: 'maildir:///home/edgewood/mail/.feeds.programming', url: 'http://www.tedunangst.com/flak/rss'}
+- {name: WebFaction Blog, target: 'maildir:///home/edgewood/mail/.lists.inbox', url: 'https://blog.webfaction.com/feed/atom/'}
+- {name: postmarketOS on Reddit, target: 'maildir:///home/edgewood/mail/.feeds.tech',
+  url: 'https://www.reddit.com/r/postmarketOS/new/.rss'}
