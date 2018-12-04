@@ -65,6 +65,13 @@ set metoo=no
 #set ascii_chars=yes
 set ascii_chars=no
 
+# Sidebar settings
+set sidebar_visible
+set sidebar_format="%B%<F? [%F]>%*  %<N?%N/>%S
+set sidebar_short_path		# display just the last segment of path
+set sidebar_width=20
+set mail_check_stats=yes	# read mail stats for %N/%S formats
+
 # force quoted printable encoding if there are 8bit chars in the message, so that I
 # can put in soft line breaks that the rest of the world respects, not format=flowed
 set text_flowed=no
