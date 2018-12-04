@@ -2,15 +2,43 @@
 
 import re
 
-def strip_priorities(line):
+
+def parse_args():
+  parser = ArgumentParser(
+      formatter_class=ArgumentDefaultsHelpFormatter,
+      description='strip parts of a todo that can change without being "new"'
+      )
+  parser.add_argument('--creation', action="store_true", default=False,
+      help='whether to strip creation dates'
+      )
+  parser.add_argument('--completion', action="store_true", default=False,
+      help='whether to strip completion dates'
+      )
+  parser.add_argument("file", nargs='?', default=sys.stdin, type=open,
+      help='file to strip priorities from, default STDIN'
+      )
+
+  return parser.parse_args()
+
+def strip_priorities(line, creation=False, completion=False):
   # strip parts of a todo that can change without being "new"
   line = re.sub(r'^\([A-Z]\) ', '', line)                 # priorities
   line = re.sub(r'\s?(due|t):\d{4}-\d\d-\d\d', '', line)  # due or hide-til dates
+  if creation:
+    line = re.sub(r'^(x )?\d{4}-\d\d-\d\d ', r'\1', line)  # creation date
+    if completion:
+      line = re.sub(r'^(x )?\d{4}-\d\d-\d\d ', r'\1', line)  # completion date
+  elif completion:
+    line = re.sub(r'^(x \d{4}-\d\d-\d\d )\d{4}-\d\d-\d\d ', r'\1', line)  # creation date
 
   return line
 
 if __name__ == '__main__':
   import sys
+  from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter, ArgumentTypeError
 
-  for line in sys.stdin.readlines():
-    print(strip_priorities(line), end='') # readlines() doesn't remove newline
+  args = parse_args()
+  kwargs = dict(creation=args.creation, completion=args.completion)
+
+  for line in args.file.readlines():
+    print(strip_priorities(line, **kwargs), end='')  # readlines() doesn't remove newline
