@@ -1,0 +1,6 @@
+base=~/mail
+maildir=lists/...:.lists*:.drafts:.archive:.archive.unsure:.topic.*
+mbox=old/...:archive-2*:sent-2*
+mfolder=search
+mformat=maildir
+database=~/.cache/mairix/mairix.db
