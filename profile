@@ -52,10 +52,11 @@ if [ -n "$DISPLAY" ]; then
 fi
 
 # point to locate databases inside encrypted space
-LOCATE_PATH=""
-for p in "$HOME"/.cache/mlocate/*.db; do
-  LOCATE_PATH="$LOCATE_PATH:$p"
-done
-LOCATE_PATH=${LOCATE_PATH##:}	# delete leading : chars
+LOCATE_PATH="$(find ~/.cache/mlocate/ -name \*.db -printf "%p:" 2>/dev/null)"
+LOCATE_PATH=${LOCATE_PATH%:}	# delete trailing ':'
 
-export LOCATE_PATH
+if [ -n "$LOCATE_PATH" ]; then
+  export LOCATE_PATH
+else
+  unset LOCATE_PATH
+fi
