@@ -46,7 +46,8 @@ sub run_action {
 
         # date could be invalid, so run in a eval so that it doesn't abort the whole script
         eval {
-          $days = Delta_Format(DateCalc('today', $dueDate), 0, '%dh')
+	  # DateCalc returns only delta hours, so select hours and convert back to days
+          $days = Delta_Format(DateCalc('today', $dueDate), 0, '%hh') / 24
         };
 
         if($@) {
