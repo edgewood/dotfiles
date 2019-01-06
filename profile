@@ -60,3 +60,13 @@ if [ -n "$LOCATE_PATH" ]; then
 else
   unset LOCATE_PATH
 fi
+
+# awscli: set environment variables to emulate use of XDG
+# https://github.com/aws/aws-cli/issues/2433
+if [ -x /usr/bin/aws ] || [ -x /usr/bin/s3cmd ]; then
+  export AWS_SHARED_CREDENTIALS_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/aws/credentials
+  export AWS_CONFIG_FILE="${XDG_CONFIG_HOME:-$HOME/.config}"/aws/config
+  # s3cmd uses the old AWS variable to find the credentials file
+  # https://github.com/s3tools/s3cmd/issues/1027
+  export AWS_CREDENTIAL_FILE="$AWS_SHARED_CREDENTIALS_FILE"
+fi
