@@ -100,6 +100,9 @@ fi
 # mark item done if not done already
 if [ "$isdone" != "1" ]; then
   "$TODO_FULL_SH" -d /dev/null command do "$item"
+elif [ -n "$to" ]; then
+  # if $to is set, not being called from archive, so don't mess with $delay
+  :
 else
   # if already marked as done, this script is likely being called from
   # "archive", so adjust delay accordingly
