@@ -27,3 +27,6 @@ UXTerm*toolBar:		true
 ! It excludes double-quote single-quote < >  ( ) [ ] back-tick { | }
 ! http://www.x.org/archive/X11R6.8.1/doc/xterm.1.html (search "int charClass")
 UXTerm*charClass:33:48,35-38:48,42-47:48,58-59:48,61:48,63-64:48,92:48:94-95:48,126:48
+! Trim trailing spaces from copying from terminal
+! https://unix.stackexchange.com/questions/218248/trailing-spaces-when-copying-from-console
+XTerm*VT100.trimSelection: True
