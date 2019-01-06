@@ -27,6 +27,7 @@ https://t.e2ma.net/optout/		list-unsubscribe	# HOBY mass mailings
 ebrief@ncjaycees.org			from
 mail@volunteerspot.com			from
 @its-go-time.com			from	# running
+senate@jci.cc				from
 
 # School
 @ncssm.edu				from
@@ -44,6 +45,7 @@ redflarekits@redflarekits.com		from
 @t-mobile-email.com			from
 @mail.eviteideas.com			from
 offers@info.subaru.com			from
+no-reply@email.johnsonsubaruspecials.com	from
 This.Week's.Recipes!			subject
 acmooreoffers@acmoore.com		from
 acmoore@e.e-acmoore.com			from
@@ -51,6 +53,7 @@ apex.nc@bounceu.com			from
 advertise-noreply@support.facebook.com	from
 news@news.efax.com			from
 PizzaHut@pizzahutoffers.com		from
+Info@TotalCombatSPorts.com              from
 
 # Household
 info@email.amica.com			from
@@ -78,9 +81,10 @@ Wells.Fargo.Online.Statement.Ready.to.View	subject
 communications@email.sharebuilder.com	from
 Coastal.e-Docs				subject
 @info9.citibank.com			from
+@info4.citi.com				from
+# exclude alerts@citibank.com
 universalcard.com			from
 # exclude @ealerts.bankofamerica.com
-#bankofamerica.com			from
 customerservice@emcom.bankofamerica.com
 
 # Harris Teeter Express Lane
