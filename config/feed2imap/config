@@ -165,7 +165,7 @@ feeds:
 - {name: Random ASCII, target: 'maildir:///home/edgewood/mail/.feeds.tech', url: 'https://randomascii.wordpress.com/feed/'}
 - {name: Blargh, target: 'maildir:///home/edgewood/mail/.feeds.tech', execurl: 'curl --silent https://blog.habets.se/rss'}
 - {name: "Assorted Nerdery", target: 'maildir:///home/edgewood/mail/.feeds.tech',
-  url: 'https://www.bostonenginerd.com/feeds/all.atom.xml'}
+  url: 'https://bostonenginerd.com/index.xml'}
 - {name: Wandering Thoughts, target: 'maildir:///home/edgewood/mail/.feeds.tech',
   url: 'https://utcc.utoronto.ca/~cks/space/blog/?atom'}
 - {name: flak, target: 'maildir:///home/edgewood/mail/.feeds.programming', url: 'http://www.tedunangst.com/flak/rss'}
