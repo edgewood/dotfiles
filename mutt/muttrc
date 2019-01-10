@@ -121,6 +121,9 @@ folder-hook =sent       set strict_threads=yes
 folder-hook =.archive*  set strict_threads=yes
 
 # Colors
+uncolor index *
+uncolor body *
+uncolor header *
 source ~/.mutt/rc/colors.rc
 color index     brightyellow default "~h '^X-Archive: Yes'"
 color index     default      default "~h '^X-Archive: Unsure'"
