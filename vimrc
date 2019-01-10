@@ -1,6 +1,11 @@
+if has("gui_running")
+    set background=light
+else
+    set background=dark
+end
+
 set autoindent
 set shiftwidth=4
-set background=dark
 set backspace=indent,eol,start
 set hidden
 
