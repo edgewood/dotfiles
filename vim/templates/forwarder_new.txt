@@ -1,0 +1,11 @@
+{$new}, this is a test of the {$forwarder} forwarder.
+
+Please reply to me if you get this message.  If you receive multiple 
+tests, you don't have to respond to each.  If you would prefer, you can 
+just tell me which ones you got.
+
+If you would like to have the forwarder point to a different address, 
+let me know so that I can change it.
+
+Ed Blackman
+Webmaster, Raleigh Jaycees
