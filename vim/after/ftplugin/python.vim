@@ -2,6 +2,6 @@
 setlocal tabstop=8
 setlocal expandtab
 retab
-" Reset tabstop to 4, and shiftwidth to match
+" Set softtabstop to 4, and shiftwidth to match
+setlocal softtabstop=4
 setlocal shiftwidth=4
-setlocal tabstop=4
