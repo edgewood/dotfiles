@@ -13,12 +13,14 @@ UXTerm*jumpScroll:	true
 UXTerm*multiScroll:	true
 UXTerm*toolBar:		true
 ! Copy/Paste:
-! Shift+Insert      : Paste from CLIPBOARD
+! Shift+Ctrl+C      : Copy from CLIPBOARD
+! Shift+Ctrl+V      : Paste from CLIPBOARD
 !  Ctrl+Insert      : Paste from PRIMARY
 ! Shift-Middle-Click: Paste from CLIPBOARD
 !       Middle-Click: Paste from PRIMARY
 *VT100.Translations: #override \n\
-	 Shift ~Ctrl <Key>Insert:	insert-selection(CLIPBOARD) \n\
+	 Shift  Ctrl <Key>C:		copy-selection(CLIPBOARD) \n\
+	 Shift  Ctrl <Key>V:		insert-selection(CLIPBOARD) \n\
 	~Shift  Ctrl <Key>Insert:	insert-selection(PRIMARY) \n\
 	 Shift ~Ctrl ~Meta <Btn2Up>:	insert-selection(CLIPBOARD) \n\
 	~Shift ~Ctrl ~Meta <Btn2Up>:	insert-selection(PRIMARY) \n
