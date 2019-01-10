@@ -20,7 +20,7 @@ inoremap <c-w> <c-g>u<c-w>
 " Centralize .swp files to avoid having them backed up, stored in version
 " control, etc.  Fall back to "same directory" or system temp dirs.
 " Priority is to paths that persist across reboots.
-set directory=/var/tmp/vim-edgewood,.,/var/tmp,/tmp
+set directory=/var/tmp/vim-edgewood//,/var/tmp/vim-edblac//,.,/var/tmp//,/tmp
 
 " remap normal mode C-l to turn off search term highlighting before refreshing
 nnoremap <silent> <c-l> :nohlsearch<CR><c-l>
