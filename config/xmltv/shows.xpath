@@ -1,0 +1,1 @@
+child::title[starts-with(text(), "Survivorm") and not(../previously-shown)]
