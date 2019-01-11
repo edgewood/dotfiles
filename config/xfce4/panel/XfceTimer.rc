@@ -1,15 +1,29 @@
 [G0]
 timername=Pomodoro
 time=1500
-timercommand=
+timercommand=xflock4
 timerinfo=25m 0s
 is_countdown=true
 
 [G1]
 timername=Break
 time=300
-timercommand=
+timercommand=xflock4
 timerinfo=5m 0s
+is_countdown=true
+
+[G2]
+timername=Log out
+time=760
+timercommand=notify-send -t 0 -i dialog-warning "Time to log off.  Locking in 5 minutes." && sleep 10 && xflock4
+timerinfo=At 12:40
+is_countdown=false
+
+[G3]
+timername=10 m
+time=600
+timercommand=
+timerinfo=10m 0s
 is_countdown=true
 
 [others]
