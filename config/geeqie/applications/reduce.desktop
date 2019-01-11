@@ -4,7 +4,7 @@ Type=Application
 Name=Reduce
 
 # call the helper script
-Exec=/home/edgewood/bin/geeqie-reduce %f
+Exec=~/bin/geeqie-reduce --to="$GEEQIE_DESTINATION" %F
 
 # Desktop files that are usable only in Geeqie should be marked like this:
 Categories=X-Geeqie;
