@@ -1,5 +1,5 @@
 Host *
-	ControlMaster yes
+        ControlMaster auto
 	ControlPath ~/.cache/ssh_%r_%h_%p
 	ControlPersist 1m
 	ServerAliveInterval 15
