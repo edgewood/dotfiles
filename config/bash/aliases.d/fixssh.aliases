@@ -1,0 +1,10 @@
+# set up easy restore of $SSH_AUTH_SOCK (eg, from within screen)
+# concept from http://samrowe.com/wordpress/ssh-agent-and-gnu-screen/
+# and https://gist.github.com/martijnvermaat/8070533#comment-1386498
+
+# save $SSH_AUTH_SOCK if interactive (and it's actually a socket)
+if [ -n "$SSH_TTY" ] && [ -S "$SSH_AUTH_SOCK" ]; then
+    echo export SSH_AUTH_SOCK="$SSH_AUTH_SOCK" > $HOME/tmp/fixssh
+    echo screen -X setenv SSH_AUTH_SOCK "$SSH_AUTH_SOCK" >> $HOME/tmp/fixssh
+fi
+alias fixssh='source "$HOME/tmp/fixssh"'

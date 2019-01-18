@@ -1,0 +1,29 @@
+# convenience methods for systems connected to SAS U drives
+if [ -d /u/edblac ]; then
+  defect() {
+    /u/edblac/bin/defect "$@" && cd /u/edblac/public/"$1"
+    export DEFECT_DIR=$PWD
+  }
+  project() {
+    /u/edblac/bin/project "$@" && cd /u/edblac/public/"$1"
+    export DEFECT_DIR=$PWD
+  }
+  playpen() {
+    if [ -n "$playpen" ]; then
+      :
+    elif [ -f .config ]; then
+      playpen="$( . .config && echo "$playpen")"
+    elif [ -n "$1" ]; then
+      playpen="/nas/scratch/edblac/$1/playpen"
+      mkdir -p "$playpen"
+    else
+      echo "Can't find playpen, looked in environment, .config, and argument list" 1>&2
+    fi
+
+    if [ -n "$playpen" ]; then
+      export DEFECT_DIR=$PWD
+      export playpen
+      cd "$playpen"
+    fi
+  }
+fi

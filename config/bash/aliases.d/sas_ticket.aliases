@@ -1,0 +1,22 @@
+ticket() {
+  # eg BAREOS-1234
+  IFS='-' read project ticket <<< "$1"
+
+  if [ -n "$ticket" ]; then
+    shift 1
+  else
+    # eg BAREOS 1234
+    project="$1"
+    ticket="$2"
+    shift 2
+  fi
+
+  [[ "$ticket" =~ ^[[:digit:]]{3,5}$ ]] || {
+    printf "Usage:\n\tticket <project>[- ]<ticket> [title...]\n\n\teg ticket BAREOS-1234 title..\n"
+    return
+  }
+  export TICKET_DIR="$HOME/tickets/$project/$ticket"
+  mkdir -p "$TICKET_DIR"
+
+  title "$project-$ticket $@"
+}
