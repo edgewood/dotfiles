@@ -143,7 +143,7 @@ elif [ -f "$(which vim)" ]; then
 fi
 
 ## History control
-
+# erase previous duplicate history lines, and don't put lines starting with space in the history
 export HISTCONTROL=erasedups:ignorespace
 export HISTFILESIZE=50000
 export HISTSIZE=1000
