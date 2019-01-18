@@ -67,18 +67,21 @@ if [ "$REMOTE" = "1" ]; then
   . ~/.Xdisplay
 fi
 
-alias keychain='/usr/bin/keychain --dir $HOME/.cache/keychain'
-alias rjckey='/usr/bin/keychain --dir $HOME/.cache/keychain/rjc'
-alias ghkey='/usr/bin/keychain --dir $HOME/.cache/keychain/gh'
-
 if tty >/dev/null; then
-  if [ "$(pwd)" = "$HOME/projects/raleighjaycees.org" ]; then
-    ssh_add() { ssh-add -l >/dev/null || ssh-add ~/.ssh/raleighjaycees; "$@"; }
-    eval $(rjckey --noinherit --timeout 60 --quiet --nogui --eval --noask)
-  else
-    ssh_add() { ssh-add -l >/dev/null || ssh-add; "$@"; }
-    eval $(keychain --timeout $((60 * 5)) --quiet --nogui --eval --noask)
-  fi
+  case "$(pwd)" in
+    */projects/raleighjaycees.org*)
+      key=~/.ssh/raleighjaycees
+      timeout=300
+      ;;
+    *)
+      key=~/.ssh/id_ecdsa
+      timeout=3600
+      ;;
+  esac
+
+  ssh_add() {
+    ssh-add -l | grep "$key" >/dev/null || ssh-add -t "$timeout" "$key" "$@"
+  }
   alias ssh='ssh_add /usr/bin/ssh'
   alias ansible-playbook='ssh_add /usr/bin/ansible-playbook'
 fi
@@ -89,10 +92,10 @@ git() {
 	fetch|pull|push)
 	    # ssh-agent is running
 	    if [ -n "$SSH_AGENT_PID" ]; then
-		# ssh-agent is the GH agent, but doesn't hold GH identity
-		if grep -q "$SSH_AGENT_PID" ~/.cache/keychain/gh/${HOSTNAME}-sh &&
+		# in a Github repo, but agent doesn't hold GH key
+		if grep -q github $(git rev-parse --show-toplevel)/.git/config &&
 		  ! ssh-add -l | grep -q github; then
-		    ssh-add ~/.ssh/github
+		    ssh-add -t 300 ~/.ssh/github
 		fi
 	    fi
 	    ;;
