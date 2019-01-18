@@ -135,6 +135,13 @@ git() {
 
 export EDITOR=vim
 
+# if view isn't vim, and vim exists, alias it
+if readlink -f $(which view) | grep -q '\<vim\>'; then
+    :
+elif [ -f "$(which vim)" ]; then
+    alias view=$(which vim)
+fi
+
 ## History control
 
 export HISTCONTROL=erasedups:ignorespace
