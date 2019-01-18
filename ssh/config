@@ -13,6 +13,21 @@ Host *+*
 Host *.lan
 	ForwardX11 yes
 
+Host *neverdoubted.com
+        User edgewood
+        ForwardAgent no
+        ForwardX11 yes
+
+# SAS build bubbles: round robin DNS means IP will vary
+Host unixbb.fyi* winbb.fyi* javabb.fyi*
+        CheckHostIP no
+
+# SAS test VMs: keys change very frequently, so turn off strict checking and
+# store them in a different file
+Host 10.* pdtebb*
+        UserKnownHostsFile ~/.ssh/known_hosts_ephemeral
+        StrictHostKeyChecking no
+
 Host edgewood *.sas.com 
 	User edblac
 	ForwardX11 yes
