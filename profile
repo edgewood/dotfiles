@@ -36,7 +36,16 @@ fi
 unset usertemp
 
 # User specific environment and startup programs
-PATH=$PATH:$HOME/bin
+# include SAS U-drive bin if it exists
+if [ -d "/u/edblac/bin" ]; then
+    PATH="/u/edblac/bin:$PATH"
+fi
+
+# set PATH so it includes user's private bin if it exists
+if [ -d "$HOME/bin" ] ; then
+    PATH="$HOME/bin:$PATH"
+fi
+
 ENV=$HOME/.bashrc
 
 export ENV PATH
