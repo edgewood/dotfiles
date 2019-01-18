@@ -90,6 +90,9 @@ unset aliases_d
 export LESS="--ignore-case --HILITE-SEARCH --RAW-CONTROL-CHARS --QUIET"
 export LESSHISTFILE=~/.cache/less.hst
 
+# make less more friendly for non-text input files, see lesspipe(1)
+[ -x /usr/bin/lesspipe ] && eval "$(SHELL=/bin/sh /usr/bin/lesspipe)"
+
 export RSYNC_RSH=ssh
 
 if [ "$REMOTE" = "1" ]; then
