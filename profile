@@ -46,10 +46,7 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-ENV=$HOME/.bashrc
-
-export ENV PATH
-
+export PATH
 export MAILPATH=
 
 # Disable XON/XOFF flow control in GUI environments
