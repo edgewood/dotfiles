@@ -1,4 +1,6 @@
-# .bash_profile
+# ~/.profile: executed by the command interpreter for login shells.
+# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
+# exists.
 
 # Get the aliases and functions
 # Source bashrc only if running bash. Might not be on old systems.
