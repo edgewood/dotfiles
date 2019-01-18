@@ -1,10 +1,11 @@
 alias Identity_default Ed Blackman <ed@edgewood.to>
 alias Identity_vim Ed Blackman <ed-vim@edgewood.to>
+alias Identity_hoa Ed Blackman <vp.sterlinghoa@gmail.com>
 
 set from="Identity_default"
 set realname=""	# override /etc/passwd to allow Identity_* aliases to work
 
-alternates .*@edgewood.to ed@theblackmans.net edgewood73@gmail.com
+alternates .*@edgewood.to ed@theblackmans.net edgewood73@gmail.com vp.sterlinghoa@gmail.com
 
 macro compose z "<edit-from><kill-line>Identity_<tab>" "Select from"
 
