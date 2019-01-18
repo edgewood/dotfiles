@@ -6,11 +6,45 @@ if [ -f /etc/bashrc ]; then
 fi
 
 export PATH=$PATH:$HOME/bin
-export PS1='[${debian_chroot:+($debian_chroot)}\u@\h \W]\$ '
 
-if [ $TERM != linux ]; then
-  export PROMPT_COMMAND='echo -ne "\033]0;${USER}@${HOSTNAME}: ${PWD}\007"'
-fi
+# Set prompt
+shopt -s histappend
+
+prompt_command() {
+    local last_rc="$?"
+
+    # save history immediately
+    history -a
+
+    # "(venv) " or ""
+    export PS1="${VIRTUAL_ENV:+(${VIRTUAL_ENV##*/}) }"
+
+    # non-printing escape sequences for xterm title
+    case "$TERM" in
+	screen)
+	    # [screen <screen number>: <$title or screen title>] user@host
+	    # http://wiki.tldp.org/Xterm-Title for escapes including non-printing
+	    # http://aperiodic.net/screen/man:string_escapes for 005 suffixes
+	    PS1+="\[\e]0;[screen \005n: ${title:-\005t}] \u@\h\007\]";;
+	*)
+	    ;;
+    esac
+
+    # user@host currdir
+    PS1+="[\u@\h \W]"
+
+    # last return code with red chevron if rc is non-zero
+    if [ "$last_rc" != 0 ]; then
+	# append a red chevron bit with status code
+	PS1+="\[\e[0;41;38;5;48;5;155m\]▶"
+	PS1+="\[\e[0;41m\] $last_rc \[\e[0m\]"
+    fi
+
+    # "$ "
+    PS1+="\$ "
+}
+
+PROMPT_COMMAND="prompt_command"
 
 # User specific aliases and functions
 alias ls='ls --color=tty'
@@ -84,10 +118,6 @@ if [ -n "$WINDOW" ]; then
 else
     export HISTFILE="$histbase/history"
 fi
-
-# save history immediately
-shopt -s histappend
-PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
 
 ## Completions
 
