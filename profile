@@ -9,9 +9,7 @@ if [ -f ~/.config/gpodder/rc ]; then
 fi
 
 # clear ssh-agent keys on login
-/usr/bin/keychain --dir ~/.cache/keychain --clear --quiet
-test -d ~/.cache/keychain/rjc && /usr/bin/keychain --dir ~/.cache/keychain/rjc --clear --quiet
-test -d ~/.cache/keychain/gh  && /usr/bin/keychain --dir ~/.cache/keychain/gh  --clear --quiet
+ssh-add -D
 
 # Create temp directory and check ~/tmp link
 usertemp="/tmp/tmp-$USER"
