@@ -72,6 +72,17 @@ fi
 # make 'dirs' easier to parse for a 'pushd x' by printing one-based index
 alias dirs="\dirs -p | awk '{print NR-1 \"\t\" \$0}'"
 
+aliases_d="${XDG_CONFIG_HOME:-$HOME/.config}/bash/aliases.d"
+if [ -d "$aliases_d" ]; then
+  for i in "$aliases_d"/*.aliases; do
+    if [ -r $i ]; then
+      . $i
+    fi
+  done
+  unset i
+fi
+unset aliases_d
+
 # smartcase: lowercase search ignores case, uppercase doesn't
 # highlight search
 # interpret ANSI escapes
