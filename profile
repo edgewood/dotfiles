@@ -1,8 +1,12 @@
 # .bash_profile
 
 # Get the aliases and functions
-if [ -f ~/.bashrc ]; then
-	. ~/.bashrc
+# Source bashrc only if running bash. Might not be on old systems.
+if [ -n "$BASH_VERSION" ]; then
+    # include .bashrc if it exists
+    if [ -f "$HOME/.bashrc" ]; then
+	. "$HOME/.bashrc"
+    fi
 fi
 if [ -f ~/.config/gpodder/rc ]; then
 	. ~/.config/gpodder/rc
