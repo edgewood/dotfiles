@@ -60,6 +60,18 @@ alias mv='mv -i'
 alias home='cd ~; clear'
 alias bc='\bc ~/.bcrc'
 
+# enable color support of ls and also add handy aliases
+if [ -x /usr/bin/dircolors ]; then
+    test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
+    alias ls='ls --color=auto'
+    alias grep='grep --color=auto'
+    alias fgrep='fgrep --color=auto'
+    alias egrep='egrep --color=auto'
+fi
+
+# make 'dirs' easier to parse for a 'pushd x' by printing one-based index
+alias dirs="\dirs -p | awk '{print NR-1 \"\t\" \$0}'"
+
 # smartcase: lowercase search ignores case, uppercase doesn't
 # highlight search
 # interpret ANSI escapes
