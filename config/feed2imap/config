@@ -75,7 +75,7 @@ feeds:
   url: http://blog.red-bean.com/sussman/?feed=rss2
   name: iBanjo
 - target: maildir:///home/edgewood/mail/.feeds.programming
-  execurl: 'curl --silent --location https://coffeeonthekeyboard.com/rss/'
+  url: https://coffeeonthekeyboard.com/rss/
   name: Coffee on the Keyboard
 - target: maildir:///home/edgewood/mail/.feeds.programming
   url: http://emergentchaos.com/feed
@@ -131,7 +131,7 @@ feeds:
   url: http://feeds.feedburner.com/DroidLife
   name: "droid life:  a motorola droid blog"
 - target: maildir:///home/edgewood/mail/.feeds.techfh
-  execurl: 'curl --silent https://blogs.dropbox.com/dropbox/feed/'
+  url: https://blogs.dropbox.com/dropbox/feed/
   name: The Dropbox Blog
 - target: maildir:///home/edgewood/mail/.feeds.techfh
   url: http://phandroid.com/feed/
@@ -163,7 +163,9 @@ feeds:
   url: 'http://rachelbythebay.com/w/atom.xml'}
 - {name: as days pass by, target: 'maildir:///home/edgewood/mail/.feeds.tech', url: 'http://www.kryogenix.org/days/feed'}
 - {name: Random ASCII, target: 'maildir:///home/edgewood/mail/.feeds.tech', url: 'https://randomascii.wordpress.com/feed/'}
-- {name: Blargh, target: 'maildir:///home/edgewood/mail/.feeds.tech', execurl: 'curl --silent https://blog.habets.se/rss'}
+- target: 'maildir:///home/edgewood/mail/.feeds.tech'
+  url: https://blog.habets.se/rss
+  name: Blargh
 - {name: "Assorted Nerdery", target: 'maildir:///home/edgewood/mail/.feeds.tech',
   url: 'https://bostonenginerd.com/index.xml'}
 - {name: Wandering Thoughts, target: 'maildir:///home/edgewood/mail/.feeds.tech',
