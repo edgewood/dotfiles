@@ -39,7 +39,7 @@
 #
 # If your login contains an @ character, replace it with %40. Other reserved
 # characters can be escaped in the same way (see man ascii to get their code)
-default-email: repeater@loghyr.lan
+default-email: edgewood@garrett.lan
 include-images: true
 cache: /home/edgewood/.cache/feed2imap.cache
 # I mostly don't care about updated stories.  Override individual exceptions where I do,
