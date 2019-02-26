@@ -433,8 +433,7 @@ function s:AliasQueryAbook()
         return
     endif
 
-    " silent exe 'let output=system("abook --mutt-query ' . lookup . '")'
-    silent exe 'let replacement=system("addresses ' . lookup . '")'
+    silent exe 'let replacement=system("addresses ' . lookup . ' 2>/dev/null")'
     if v:shell_error
         let b:AliasQueryMsg = output
         return
