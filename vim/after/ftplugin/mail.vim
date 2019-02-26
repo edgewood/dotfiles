@@ -435,7 +435,7 @@ function s:AliasQueryAbook()
 
     silent exe 'let replacement=system("addresses ' . lookup . ' 2>/dev/null")'
     if v:shell_error
-        let b:AliasQueryMsg = output
+        let b:AliasQueryMsg = replacement
         return
     endif
 
