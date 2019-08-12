@@ -63,7 +63,7 @@ set ascii_chars=no
 
 # Sidebar settings
 set sidebar_visible
-set sidebar_format="%B%<F? [%F]>%*  %<N?%N/>%S
+set sidebar_format="%B%*  %! %?N?%N/?%S"
 set sidebar_short_path		# display just the last segment of path
 set sidebar_width=20
 set mail_check_stats=yes	# read mail stats for %N/%S formats
@@ -75,11 +75,6 @@ set allow_8bit=no
 
 set help=no
 unset pipe_decode
-
-# NNTP config
-set nntp_authenticators=user    # eternal-september.org only works with this
-# set nntp_pass=                # password in KeePass
-set news_cache_dir=~/.cache/mutt
 
 # the most frequent thing I do in the file browser is search for 
 # Maildirs, so optimize mask for that case
