@@ -3,7 +3,7 @@
 # Word 
 application/msword; antioffice word %s; copiousoutput;
 application/octet-stream; antioffice word %s; copiousoutput; test=echo %s|grep -Eqi "docx?$"
-application/vnd.openxmlformats-officedocument.wordprocessingml.document; antioffice word %s; copiousoutput;
+application/vnd.openxmlformats-officedocument.wordprocessingml.document; docx2txt %s -; copiousoutput;
 application/rtf; antioffice word %s; copiousoutput;
 # PDF
 application/pdf; pdftotext %s -
