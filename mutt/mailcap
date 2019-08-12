@@ -1,14 +1,13 @@
 #image/*; gimp --no-splash %s &
 #image/*; display %s
-image/*; evince-previewer %s
 # Word 
 application/msword; antioffice word %s; copiousoutput;
 application/octet-stream; antioffice word %s; copiousoutput; test=echo %s|grep -Eqi "docx?$"
 application/vnd.openxmlformats-officedocument.wordprocessingml.document; antioffice word %s; copiousoutput;
 application/rtf; antioffice word %s; copiousoutput;
 # PDF
-application/pdf; evince %s
-application/octet-stream; pdfread %s; test=echo %s|grep -qi "pdf$"
+application/pdf; pdftotext %s -
+application/octet-stream; pdftotext %s -; test=echo %s|grep -qi "pdf$"
 # Excel
 application/vnd.ms-excel; antioffice excel %s; copiousoutput;
 application/octet-stream; antioffice excel %s; copiousoutput; test=echo %s|grep -qi "xls$"
