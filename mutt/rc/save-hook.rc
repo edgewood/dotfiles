@@ -6,7 +6,7 @@ set record=+.archive			# overriden by fcc-hooks
 unhook save-hook
 
 # ecommerce messages
-save-hook "~f .*amazon.com"	+.ecommerce
+save-hook "%f ecommerce"	+.ecommerce
 save-hook "~s 'AT&T Payment Processed for Account Ending in 4069'"	+.ecommerce
 save-hook "~s 'You sent an automatic payment to '"	+.ecommerce
 
@@ -16,5 +16,3 @@ save-hook "."			"+.%u"
 # Specify where to save composed messages
 #   fcc-hook [!]<pattern> <mailbox>
 fcc-hook "~C .*-acceptsub.*@yahoogroups.com"					/dev/null
-
-

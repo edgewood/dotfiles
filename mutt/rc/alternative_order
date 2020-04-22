@@ -1,7 +1,6 @@
 # prefer plain text to HTML in general
 message-hook . "unalternative_order *; alternative_order text/plain text/html"
 
-# drop plain text from senders who send an empty or trivial plain text part
-message-hook "~f '@proxyvote.com'"      "unalternative_order text/plain"
-message-hook "~f '@jci.cc'"		"unalternative_order text/plain"
+# drop plain text from senders who send an empty, trivial, or ugly plain text part
+message-hook "%f htmlsenders"	"unalternative_order text/plain"
 

@@ -83,6 +83,9 @@ set mask="^\."
 # set environment dependent options
 source '~/.mutt/bin/env_dependent_options.sh|'
 
+# import dynamic groups
+source '~/.mutt/bin/groups_from_lines|'
+
 # mailboxes
 unmailboxes
 mailboxes !
@@ -261,3 +264,8 @@ macro index,pager,browser _k "\
 <pipe-entry>extractThreadIDs >> $folder/.nonmail/kill<enter>\
 <enter-command>set pipe_decode=\$my_pipe_decode &my_pipe_decode<enter>" "kill thread"
 
+# read email to From: add to dynamic group, then reload dynamic groups
+macro index,pager ,g "\
+<pipe-entry>~/.mutt/bin/group_prompt<enter>\
+<enter-command>source '~/.mutt/bin/groups_from_lines|'<enter>\
+" "prompt for addition to dynamic group
