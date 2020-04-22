@@ -20,7 +20,9 @@ sub run_action {
 
   LINE: while (defined(my $line = <TODO>)) {
     chomp($line);
-    $found = ( $found || $line =~ m@\s*$msg\s*$@ );
+    # ignore postpone markers when considering matches
+    $line =~ s/ [TtPp]:([0-9-]+)//;
+    $found = ( $found || $line =~ m@\Q$msg\E\s*$@ );
   }
 
   if(!$found) {
