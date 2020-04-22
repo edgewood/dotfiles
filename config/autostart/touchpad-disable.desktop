@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Application
+Name=Touchpad Disable
+Comment=Disable laptop touchpad
+Exec=sh -c 'xinput disable "$(xinput list --name-only | grep -i touchpad)"'
+OnlyShowIn=LXDE
