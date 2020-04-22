@@ -52,6 +52,11 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
+# add locally-installed Go in PATH if it exists
+if [ -d "/usr/local/go/bin" ]; then
+    PATH="$PATH:/usr/local/go/bin"
+fi
+
 export PATH
 export MAILPATH=
 
