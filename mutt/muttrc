@@ -97,6 +97,7 @@ source ~/.mutt/rc/headers
 source ~/.mutt/rc/print-normal.rc
 source ~/.mutt/rc/crypt
 source ~/.mutt/rc/charset
+source ~/.mutt/rc/compressed_folders.rc
 source ~/.mutt/rc/save-hook.rc
 source ~/.mutt/rc/send-hook.rc
 

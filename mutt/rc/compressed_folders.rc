@@ -1,0 +1,7 @@
+# bz2
+open-hook '\.bz2$' "bzip2 --stdout --decompress '%f' > '%t'"
+append-hook '\.bz2$' "bzip2 --stdout --compress '%t' >> '%f'"
+
+# xz
+open-hook '\.xz$' "xz --stdout --decompress '%f' > '%t'"
+append-hook '\.xz$' "xz --stdout --compress '%t' >> '%f'"
