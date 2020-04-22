@@ -174,6 +174,26 @@ unset histbase
 todo=todo
 
 # bash completions for todo
+_todo_cached_completions()
+{
+  local comp_cache="${XDG_CACHE_HOME:-$HOME/.cache}/todo_completion.lst"
+  local up_to_date=0
+
+  # cache is up-to-date if it is non-empty and less than 24 hours old
+  if [ -s "$comp_cache" ]; then
+    if [ "$(stat --format "%Y" "$comp_cache")" -ge "$(( $(date +%s) - (24*60*60) ))" ]; then
+      up_to_date=1
+    fi
+  fi
+
+  if [ "$up_to_date" = 0 ]; then
+    (. $HOME/.todo/config; export TODO_FILE=$DONE_FILE; todo lsprj; todo lsc) |
+      sed -re 's/^(.[[:alnum:]]+).*/\1/' | uniq | tee "$comp_cache"
+  else
+    cat "$comp_cache"
+  fi
+}
+
 _mycomplete_todo()
 {
   local cmd=${COMP_CWORD} #Where in the command are we?
@@ -186,12 +206,14 @@ _mycomplete_todo()
     report" -- "${word}"))
   else
     # Complete projects and contexts, removing newlines
-    COMPREPLY=($(compgen -W "$(echo $(todo lsprj) $(todo lsc))" -- "${word}"))
+    readarray -t current_completions < <(todo lsprj; todo lsc)
+    COMPREPLY=($(compgen -W "${current_completions[*]}" -- "${word}"))
 
     # No match, try projects and contexts from 'listall'
-    allprjcon=$(. $HOME/.todo/config; export TODO_FILE=$DONE_FILE; todo lsprj; todo lsc)
-
-    COMPREPLY=($(compgen -W "$(echo $allprjcon)" -- "${word}"))
+    if [ -z "$COMPREPLY" ]; then
+      readarray -t historical_completions < <(_todo_cached_completions)
+      COMPREPLY=($(compgen -W "${historical_completions[*]}" -- "${word}"))
+    fi
   fi
 }
 
