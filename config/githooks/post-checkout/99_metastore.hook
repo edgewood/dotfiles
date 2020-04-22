@@ -1,0 +1,10 @@
+#!/bin/sh
+
+set -e
+
+gitroot="$(git rev-parse --show-toplevel)"
+metadata="${gitroot}/.metadata" 
+
+if [ -e "${metadata}" ]; then
+    metastore --apply --file "${metadata}" --quiet
+fi

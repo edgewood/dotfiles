@@ -7,3 +7,5 @@
         autoStash = true        # automatically stash and pop around a rebase, git 2.9+
 [alias]
         logtree = log --graph --oneline --decorate --all
+[init]
+	templatedir = ~/.config/git/templates

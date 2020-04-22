@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [ "$(id -un)" = "edblac" ] && [ -z "$GIT_SKIP_SEMVER" ]; then
+    commit_msg="$1"
+    grep -q "^Sem-Ver: (api-break|feature|bugfix)" "$commit_msg" || {
+        rc=$?
+        (
+            echo "Commit message is required to have a Sem-Ver"
+            echo ""
+            echo "set GIT_SKIP_SEMVER to anything to skip this check"
+        ) 1>&2
+        exit $rc
+    }
+fi

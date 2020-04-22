@@ -1,0 +1,24 @@
+#!/bin/sh
+
+set -e
+
+hook_type="${0##*/}"
+
+basedir="${XDG_CONFIG_HOME:-$HOME/.config}/githooks"
+hookdir="${basedir}/${hook_type}"
+
+set -e
+
+if [ -d "${hookdir}" ]; then
+    LC_COLLATE=C
+    for hook in ${hookdir}/*.hook; do
+        if [ -x "${hook}" ]; then
+            ${hook} "$@"
+            rc=$?
+            if [ "${rc}" != 0 ]; then
+                printf "${hook} failed with ${rc}\n"
+                exit ${rc}
+            fi
+        fi
+    done
+fi
