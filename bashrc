@@ -222,3 +222,15 @@ complete -F _mycomplete_todo t
 
 # prevent Mono from creating $HOME/.wapi
 export MONO_DISABLE_SHM=1
+
+# interactive mv
+# https://gist.github.com/premek/6e70446cfc913d3c929d7cdbfe896fef
+function imv() {
+  if [ "$#" -ne 1 ] || [ ! -f "$1" ]; then
+    command mv "$@"
+    return
+  fi
+
+  read -ei "$1" newfilename
+  command mv -v -- "$1" "$newfilename"
+}
