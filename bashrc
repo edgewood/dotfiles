@@ -115,7 +115,8 @@ if tty >/dev/null; then
   esac
 
   ssh_add() {
-    ssh-add -l | grep "$key" >/dev/null || ssh-add -t "$timeout" "$key" "$@"
+    ssh-add -l | grep "$key" >/dev/null || ssh-add -t "$timeout" "$key"
+    "$@"
   }
   alias ssh='ssh_add /usr/bin/ssh'
   alias ansible-playbook='ssh_add /usr/bin/ansible-playbook'
