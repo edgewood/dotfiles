@@ -127,10 +127,9 @@ git() {
     case "$cmd" in
 	fetch|pull|push)
 	    # ssh-agent is running
-	    if [ -n "$SSH_AGENT_PID" ]; then
+	    if [ -n "$SSH_AUTH_SOCK" ]; then
 		# in a Github repo, but agent doesn't hold GH key
-		if grep -q github $(git rev-parse --show-toplevel)/.git/config &&
-		  ! ssh-add -l | grep -q github; then
+		if git ls-remote --get-url | grep -q github && ! ssh-add -l | grep -q github; then
 		    ssh-add -t 300 ~/.ssh/github
 		fi
 	    fi
