@@ -1,0 +1,3 @@
+skips:
+# starts with MMM DD, YYYY or MMM D, YYYY
+- ^(January|February|March|April|May|June|July|August|September|October|November|December) (?:(?:[0-2]?\d{1})|(?:[3][01]{1})), (?:2\d{3})

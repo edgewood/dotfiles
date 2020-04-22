@@ -1,0 +1,5 @@
+---
+skips:
+- Swift
+- c\#
+- Visual Studio
