@@ -13,6 +13,13 @@ shift
 item="$1"
 shift
 text="$@"
+marker='##'
+
+if sed "$item!d" "$TODO_FILE" | grep -q " $marker "; then
+  marker=''     # item already has comment marker, don't add another
+fi
+
+text="$marker $text"
 
 # call back to the main script to add comment marker and comment text
-"$TODO_FULL_SH" command append "$item" '##' "$text"
+"$TODO_FULL_SH" command append "$item" $text
