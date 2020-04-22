@@ -155,7 +155,7 @@ export HISTFILESIZE=50000
 export HISTSIZE=1000
 
 # window-specific history
-histbase="$HOME/.cache/bash_history"
+histbase="$HOME/.local/bash/history"
 mkdir -p "$histbase"
 
 if [ -n "$WINDOW" ]; then
@@ -163,6 +163,7 @@ if [ -n "$WINDOW" ]; then
 else
     export HISTFILE="$histbase/history"
 fi
+unset histbase
 
 ## Completions
 
