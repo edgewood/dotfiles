@@ -35,6 +35,7 @@ def parse_args():
   parser.add_argument('desc', nargs='+', metavar='DESC', help='description of reimbursement')
   parser.add_argument('-x', '--expected_date', default='now +3 weeks', 
       help='when the reimbursement is expected (any datestring parsed by `date` accepted)')
+  parser.add_argument('-p', '--pri', default='B', help='priority for the item')
 
   if action == 'usage':
     print(todo_usage(parser.format_help(), indent=True))
@@ -47,6 +48,7 @@ if __name__ == '__main__':
   args = parse_args()
   cmd = [ os.environ['TODO_FULL_SH'], 'postpone',
       '--to', args.expected_date,
+      '--pri', args.pri,
       'confirm receipt of ${0:.2f} +reimbursement for'.format(args.amount),
       ' '.join(args.desc),
       '@home'
