@@ -29,8 +29,11 @@ class Lottery(object):
 
     def __init__(self, unbiased):
         self.lotteries = {}
+        self._unbiased = unbiased
         if unbiased:
             self.lotteries[self.base] = []
+            self.prioritized = self.base
+            self.highest = self.base
             self._choose_prioritized = self._choose_base
             self._choose_highest = self._choose_base
         else:
@@ -41,6 +44,8 @@ class Lottery(object):
     def add(self, name, i):
         if name == self.base:
             self.lotteries[self.base].append(i)
+        elif self._unbiased:
+            pass
         elif name == self.prioritized:
             self.lotteries[self.base].append(i)
             self.lotteries[self.prioritized].append(i)
@@ -92,20 +97,21 @@ if __name__ == '__main__':
 
         for i, line in enumerate(lines):
             l = len(line)
-            if l > 0 and line[0:2] == 'x ':
-                # skip completed items
+            if l == 1 or l > 0 and line[0:2] == 'x ':
+                # skip completed and moved items
                 pass
-            elif line.startswith(priority_prefix):
+            if line.startswith(priority_prefix):
                 lottery.add(Lottery.highest, i)
-            elif l > 3 and line[0] == '(' and line[2:4] == ') ' and line[1] in ascii_uppercase:
+            if l > 3 and line[0] == '(' and line[2:4] == ') ' and line[1] in ascii_uppercase:
                 lottery.add(Lottery.prioritized, i)
-            else:
-                lottery.add(Lottery.base, i)
+            lottery.add(Lottery.base, i)
 
         chosen = lottery.choose()
 
-        # create search for 'todo list' by zero padding chosen to width of highest number
-        search = '^{chosen:0{width}}'.format(chosen=chosen, width=len(str(i)))
+        # create filter for 'todo ls'
+        env = os.environ
+        env["TODOTXT_FINAL_FILTER"] = "grep -E '^0*{} '".format(chosen)
 
         # call todo to display chosen item
-        call([ os.environ['TODO_FULL_SH'], 'list', search ])
+        todo = env['TODO_FULL_SH']
+        call([todo, '-p', 'ls'], env=env)
